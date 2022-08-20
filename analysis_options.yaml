@@ -5,6 +5,8 @@ linter:
     public_member_api_docs: false
     always_use_package_imports: false
     sort_constructors_first: false
+    one_member_abstracts: false
+    unnecessary_lambdas: false
 
 analyzer:
   errors:
