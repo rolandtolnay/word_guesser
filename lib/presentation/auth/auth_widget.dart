@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../domain/model/user_entity.dart';
 import '../common/loading_scaffold.dart';
 import '../common/use_init_hook.dart';
+import 'name_input_dialog.dart';
 import 'user_notifier.dart';
 
 class AuthWidget extends HookConsumerWidget {
@@ -14,7 +16,16 @@ class AuthWidget extends HookConsumerWidget {
 
     final user = ref.watch(userProvider);
     if (user == null) return LoadingScaffold();
-    return MyHomePage(title: 'Flutter Demo Home Page');
+
+    useInitAsync(() => _askForDisplayNameIfNeeded(user, context));
+
+    return MyHomePage(title: user.displayName ?? '');
+  }
+
+  void _askForDisplayNameIfNeeded(UserEntity user, BuildContext context) {
+    if (user.displayName?.isEmpty ?? true) {
+      NameInputDialog.show<void>(context);
+    }
   }
 }
 
