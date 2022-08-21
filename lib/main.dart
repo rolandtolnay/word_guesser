@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'firebase_options.dart';
@@ -21,10 +23,32 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
+      title: 'Wordaroo',
+      theme: FlexThemeData.light(
+        scheme: FlexScheme.materialBaseline,
+        surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
+        blendLevel: 20,
+        appBarOpacity: 0.95,
+        subThemesData: const FlexSubThemesData(
+          blendOnLevel: 20,
+          blendOnColors: false,
+        ),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        fontFamily: GoogleFonts.rubik().fontFamily,
       ),
+      darkTheme: FlexThemeData.dark(
+        scheme: FlexScheme.materialBaseline,
+        surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
+        blendLevel: 15,
+        appBarStyle: FlexAppBarStyle.background,
+        appBarOpacity: 0.90,
+        subThemesData: const FlexSubThemesData(
+          blendOnLevel: 30,
+        ),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        fontFamily: GoogleFonts.rubik().fontFamily,
+      ),
+      themeMode: ThemeMode.light,
       home: AuthWidget(),
     );
   }

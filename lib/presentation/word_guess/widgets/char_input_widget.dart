@@ -43,6 +43,7 @@ class _CharInputWidgetState extends State<CharInputWidget> {
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
         disabledBorder: InputBorder.none,
+        fillColor: Colors.transparent,
       ),
       style: TextStyle(
         color: Colors.transparent,
@@ -71,16 +72,14 @@ class _CharInputWidgetState extends State<CharInputWidget> {
                   width: 40,
                   height: 44,
                   decoration: BoxDecoration(
-                    border: Border.all(),
+                    border: Border.all(color: Color(0xff1e272e)),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     color: widget.controller.charSimilarityList[i].color,
                   ),
                   child: Center(
                     child: Text(
                       letter,
-                      style: textTheme.headline6?.copyWith(
-                        color: Colors.black,
-                      ),
+                      style: textTheme.headline6,
                     ),
                   ),
                 ),

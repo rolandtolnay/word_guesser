@@ -112,7 +112,7 @@ class WordGuessPage extends HookConsumerWidget {
                   style: textTheme.headline4,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Align(
@@ -142,6 +142,7 @@ class WordGuessPage extends HookConsumerWidget {
                 child: GestureDetector(
                   onTap: () => focusNode.requestFocus(),
                   child: Card(
+                    elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),

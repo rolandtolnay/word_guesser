@@ -74,14 +74,15 @@ enum CharSimilarity {
   similar,
   exactMatch;
 
+  // https://flatuicolors.com/palette/se
   Color? get color {
     switch (this) {
       case CharSimilarity.none:
-        return Colors.grey[300];
+        return Color(0xffd2dae2);
       case CharSimilarity.similar:
-        return Colors.yellow[300];
+        return Color(0xffffc048);
       case CharSimilarity.exactMatch:
-        return Colors.green[600];
+        return Color(0xff05c46b);
     }
   }
 }
