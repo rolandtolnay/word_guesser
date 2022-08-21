@@ -48,6 +48,9 @@ class FirAuthRepository implements AuthRepository {
   Future<ApiException?> signInAnonymously() async {
     try {
       await _auth.signInAnonymously();
+      if (currentUser != null) {
+        await usersRef.doc(currentUser!.id).set(currentUser!);
+      }
       return null;
     } catch (e, st) {
       dev.log('[ERROR] ${e.toString()}', error: e, stackTrace: st);
@@ -63,6 +66,9 @@ class FirAuthRepository implements AuthRepository {
     );
     try {
       await _auth.currentUser?.updateDisplayName(name);
+      if (currentUser != null) {
+        await usersRef.doc(currentUser!.id).set(currentUser!);
+      }
       return null;
     } catch (e, st) {
       dev.log('[ERROR] ${e.toString()}', error: e, stackTrace: st);

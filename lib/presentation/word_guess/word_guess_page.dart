@@ -7,7 +7,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../domain/model/word_model.dart';
 import '../common/widgets/loading_scaffold.dart';
-import 'current_word_notifier.dart';
+import 'notifiers/current_word_notifier.dart';
+import 'notifiers/word_guess_notifier.dart';
 import 'widgets/char_input_controller.dart';
 import 'widgets/char_input_widget.dart';
 import 'widgets/text_hint_button.dart';
@@ -53,8 +54,11 @@ class WordGuessPage extends HookConsumerWidget {
       icon: Icon(Icons.login),
       onPressed: () {
         isWordValid.value = controller.value.validateWord();
+        if (isWordValid.value) {
+          ref.read(wordGuessProvider).addGuessedWord(word);
+        }
       },
-      label: Text('CHECK'),
+      label: Text('SUBMIT'),
       style: ButtonStyle(
         fixedSize: MaterialStateProperty.resolveWith(
           (_) => Size.fromHeight(44),

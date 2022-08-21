@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:riverpod/riverpod.dart';
 
-import '../../domain/model/word_model.dart';
-import 'word_list_notifier.dart';
+import '../../../domain/model/word_model.dart';
+import '../word_list_notifier.dart';
 
 final currentWordProvider =
     StateNotifierProvider<CurrentWordNotifier, WordModel?>(

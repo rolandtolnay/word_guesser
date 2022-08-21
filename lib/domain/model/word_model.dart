@@ -18,7 +18,9 @@ class WordModel {
       _$WordModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$WordModelToJson(this);
+}
 
+extension Convenience on WordModel {
   String get nativeWord => languages[wordLanguage] ?? '';
 }
 

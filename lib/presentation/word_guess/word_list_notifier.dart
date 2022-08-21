@@ -1,8 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../domain/model/word_model.dart';
-import '../../domain/repository/word_repository.dart';
-import '../../injectable/injectable.dart';
+import '../../../domain/model/word_model.dart';
+import '../../../domain/repository/word_repository.dart';
+import '../../../injectable/injectable.dart';
 import '../common/request_notifier.dart';
 
 final wordListProvider = ChangeNotifierProvider(
