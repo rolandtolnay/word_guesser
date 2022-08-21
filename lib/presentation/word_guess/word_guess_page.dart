@@ -10,6 +10,7 @@ import '../common/widgets/loading_scaffold.dart';
 import 'current_word_notifier.dart';
 import 'widgets/char_input_controller.dart';
 import 'widgets/char_input_widget.dart';
+import 'widgets/text_hint_button.dart';
 
 // TODO(Roland): Refactor words to use hu-HU and correct tts below
 const wordLanguage = 'hu_HU';
@@ -19,9 +20,6 @@ class WordGuessPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
     final word = ref.watch(currentWordProvider);
     if (word == null) return LoadingScaffold();
 
@@ -37,37 +35,17 @@ class WordGuessPage extends HookConsumerWidget {
     );
 
     final hintRow = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Column(
-          children: [
-            ElevatedButton.icon(
-              onPressed: didTextHint.value
-                  ? null
-                  : () {
-                      didTextHint.value = true;
-                    },
-              icon: Icon(Icons.description),
-              label: Text('TEXT HINT'),
-            ),
-            Visibility(
-              visible: didTextHint.value,
-              child: Text(
-                word.textHint,
-                style: textTheme.headline6,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
+        const Spacer(),
+        TextHintButton(hint: word.textHint, key: ValueKey(word.textHint)),
+        const SizedBox(width: 16),
         ElevatedButton.icon(
-          onPressed: () {
-            textToSpeech.speak(word.soundHint);
-          },
+          onPressed: () => textToSpeech.speak(word.soundHint),
           icon: Icon(Icons.volume_up),
-          label: Text('SOUND HINT'),
+          label: Text('HUNGARIAN'),
         ),
+        const Spacer(),
       ],
     );
 
@@ -84,6 +62,27 @@ class WordGuessPage extends HookConsumerWidget {
       ),
     );
 
+    final nextWordButton = ElevatedButton.icon(
+      icon: Icon(Icons.fast_forward),
+      onPressed: () {
+        ref.read(currentWordProvider.notifier).generateRandomWord();
+        final word = ref.read(currentWordProvider);
+        if (word != null) {
+          controller.value.updateExpectedWord(word.nativeWord);
+        }
+        didTextHint.value = false;
+        isWordValid.value = false;
+      },
+      label: Text('NEXT WORD'),
+      style: ButtonStyle(
+        fixedSize: MaterialStateProperty.resolveWith(
+          (_) => Size.fromHeight(44),
+        ),
+      ),
+    );
+
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
@@ -98,41 +97,24 @@ class WordGuessPage extends HookConsumerWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-              CachedNetworkImage(
-                imageUrl: word.imageUrl,
-                fit: BoxFit.contain,
-                height: 180,
-                width: 180,
+              Align(
+                child: CachedNetworkImage(
+                  imageUrl: word.imageUrl,
+                  fit: BoxFit.contain,
+                  height: 180,
+                  width: 180,
+                ),
               ),
               const SizedBox(height: 16),
-              hintRow,
-              const SizedBox(height: 32),
+              SizedBox(height: 40, child: hintRow),
+              const SizedBox(height: 40),
               CharInputWidget(controller: controller.value),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 48),
                 child: Visibility(
                   visible: !isWordValid.value,
-                  replacement: ElevatedButton.icon(
-                    icon: Icon(Icons.fast_forward),
-                    onPressed: () {
-                      ref
-                          .read(currentWordProvider.notifier)
-                          .generateRandomWord();
-                      final word = ref.read(currentWordProvider);
-                      if (word != null) {
-                        controller.value.updateExpectedWord(word.nativeWord);
-                      }
-                      didTextHint.value = false;
-                      isWordValid.value = false;
-                    },
-                    label: Text('NEXT WORD'),
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.resolveWith(
-                        (_) => Size.fromHeight(44),
-                      ),
-                    ),
-                  ),
+                  replacement: nextWordButton,
                   child: checkButton,
                 ),
               )
