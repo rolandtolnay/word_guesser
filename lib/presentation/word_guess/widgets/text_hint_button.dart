@@ -12,13 +12,20 @@ class TextHintButton extends HookWidget {
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    return ElevatedButton.icon(
+    return TextButton.icon(
       onPressed: didUseHint.value ? null : () => didUseHint.value = true,
-      icon: didUseHint.value ? Icon(Icons.lightbulb_outline) : Icon(Icons.edit),
-      label: didUseHint.value ? Text(hint.toUpperCase()) : Text('ENGLISH'),
+      icon: didUseHint.value ? SizedBox.shrink() : Icon(Icons.edit),
+      label: didUseHint.value
+          ? Text(
+              hint.toUpperCase(),
+              style: TextStyle(color: colorScheme.onSurface),
+            )
+          : Text('ENGLISH'),
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-          (states) => states.isDisabled ? colorScheme.surface : null,
+        padding: MaterialStateProperty.resolveWith(
+          (states) => states.isDisabled
+              ? const EdgeInsets.fromLTRB(12, 8, 20, 8)
+              : null,
         ),
         foregroundColor: MaterialStateProperty.resolveWith(
           (states) => states.isDisabled ? colorScheme.primary : null,
@@ -26,7 +33,7 @@ class TextHintButton extends HookWidget {
         side: MaterialStateProperty.resolveWith(
           (states) {
             return states.isDisabled
-                ? BorderSide(color: colorScheme.primary)
+                ? BorderSide(color: colorScheme.onSurface)
                 : null;
           },
         ),

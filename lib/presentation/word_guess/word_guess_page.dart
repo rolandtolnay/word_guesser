@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/model/word_model.dart';
 import '../common/widgets/loading_scaffold.dart';
 import 'notifiers/current_word_notifier.dart';
+import 'notifiers/guess_count_provider.dart';
 import 'notifiers/word_guess_notifier.dart';
 import 'widgets/char_input_controller.dart';
 import 'widgets/char_input_widget.dart';
@@ -40,8 +41,8 @@ class WordGuessPage extends HookConsumerWidget {
       children: [
         const Spacer(),
         TextHintButton(hint: word.textHint, key: ValueKey(word.textHint)),
-        const SizedBox(width: 16),
-        ElevatedButton.icon(
+        const Spacer(),
+        TextButton.icon(
           onPressed: () => textToSpeech.speak(word.soundHint),
           icon: Icon(Icons.volume_up),
           label: Text('HUNGARIAN'),
@@ -95,24 +96,45 @@ class WordGuessPage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 16),
-              Text(
-                'Guess the word',
-                style: textTheme.headline4,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              Align(
-                child: CachedNetworkImage(
-                  imageUrl: word.imageUrl,
-                  fit: BoxFit.contain,
-                  height: 180,
-                  width: 180,
+              Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Text(
+                  'Guess the word',
+                  style: textTheme.headline4,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Text(
+                  'GUESSED: ${ref.watch(guessCountProvider)}',
+                  style: textTheme.caption,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 24),
+                        CachedNetworkImage(
+                          imageUrl: word.imageUrl,
+                          fit: BoxFit.contain,
+                          height: 180,
+                          width: 180,
+                        ),
+                        const SizedBox(height: 24),
+                        CharInputWidget(controller: controller.value),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
               SizedBox(height: 40, child: hintRow),
-              const SizedBox(height: 40),
-              CharInputWidget(controller: controller.value),
               const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 48),

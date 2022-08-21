@@ -15,7 +15,7 @@ class UserNotifier extends StateNotifier<UserEntity?> {
   late final StreamSubscription<UserEntity?> _listener;
 
   UserNotifier(this._repository) : super(null) {
-    _listener = _repository.onAuthStateChanged.listen((user) {
+    _listener = _repository.onUserChanged.listen((user) {
       state = user;
     });
   }
@@ -24,7 +24,6 @@ class UserNotifier extends StateNotifier<UserEntity?> {
 
   Future<void> updateDisplayName(String name) async {
     await _repository.updateDisplayName(name);
-    state = _repository.currentUser;
   }
 
   @override

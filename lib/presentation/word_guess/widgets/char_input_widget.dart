@@ -64,9 +64,9 @@ class _CharInputWidgetState extends State<CharInputWidget> {
               final letter = i < input.length ? input[i] : '';
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Container(
-                  width: 44,
+                  width: 40,
                   height: 44,
                   decoration: BoxDecoration(
                     border: Border.all(),

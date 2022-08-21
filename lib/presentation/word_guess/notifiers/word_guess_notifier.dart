@@ -11,7 +11,7 @@ final wordGuessProvider = ChangeNotifierProvider(
   (ref) => WordGuessNotifier(getIt(), ref.watch(userProvider)),
 );
 
-class WordGuessNotifier extends RequestNotifier<void> {
+class WordGuessNotifier extends RequestNotifier<List<String>> {
   final ProfileRepository _profileRepository;
   final UserEntity? _user;
 
@@ -20,7 +20,6 @@ class WordGuessNotifier extends RequestNotifier<void> {
   void addGuessedWord(WordModel word) {
     final user = _user;
     if (user == null) return;
-
     executeRequest(() => _profileRepository.addGuessedWord(word, user: user));
   }
 }

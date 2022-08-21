@@ -3,8 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/use_init_hook.dart';
 import '../../common/widgets/loading_scaffold.dart';
+import '../notifiers/word_list_notifier.dart';
 import '../word_guess_page.dart';
-import '../word_list_notifier.dart';
 
 class WordFetcherWidget extends HookConsumerWidget {
   const WordFetcherWidget({super.key});
