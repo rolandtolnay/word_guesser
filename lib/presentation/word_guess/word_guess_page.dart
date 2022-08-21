@@ -6,23 +6,35 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../domain/model/word_model.dart';
+import '../common/widgets/loading_scaffold.dart';
+import 'current_word_notifier.dart';
+import 'widgets/char_input_controller.dart';
 import 'widgets/char_input_widget.dart';
 
+// TODO(Roland): Refactor words to use hu-HU and correct tts below
 const wordLanguage = 'hu_HU';
 
 class WordGuessPage extends HookConsumerWidget {
-  final WordModel word;
-
-  const WordGuessPage({required this.word, super.key});
+  const WordGuessPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
+    final word = ref.watch(currentWordProvider);
+    if (word == null) return LoadingScaffold();
+
     final didTextHint = useState<bool>(false);
-    final textToSpeech =
-        useState<FlutterTts>(FlutterTts()..setLanguage(wordLanguage)).value;
+    final isWordValid = useState<bool>(false);
+
+    final textToSpeech = useState<FlutterTts>(
+      FlutterTts()..setLanguage('hu-HU'),
+    ).value;
+
+    final controller = useState<CharInputController>(
+      CharInputController(expectedWord: word.nativeWord),
+    );
 
     final hintRow = Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -59,8 +71,18 @@ class WordGuessPage extends HookConsumerWidget {
       ],
     );
 
-    final nativeWord = word.languages[wordLanguage]!;
-    final controller = useState<CharInputController>(CharInputController());
+    final checkButton = ElevatedButton.icon(
+      icon: Icon(Icons.login),
+      onPressed: () {
+        isWordValid.value = controller.value.validateWord();
+      },
+      label: Text('CHECK'),
+      style: ButtonStyle(
+        fixedSize: MaterialStateProperty.resolveWith(
+          (_) => Size.fromHeight(44),
+        ),
+      ),
+    );
 
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
@@ -79,30 +101,39 @@ class WordGuessPage extends HookConsumerWidget {
               CachedNetworkImage(
                 imageUrl: word.imageUrl,
                 fit: BoxFit.contain,
-                height: 240,
-                width: 240,
+                height: 180,
+                width: 180,
               ),
               const SizedBox(height: 16),
               hintRow,
               const SizedBox(height: 32),
-              CharInputWidget(
-                nativeWord: nativeWord,
-                controller: controller.value,
-              ),
+              CharInputWidget(controller: controller.value),
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 48),
-                child: ElevatedButton.icon(
-                  icon: Icon(Icons.login),
-                  onPressed: () {
-                    controller.value.validateWord();
-                  },
-                  label: Text('CHECK'),
-                  style: ButtonStyle(
-                    fixedSize: MaterialStateProperty.resolveWith(
-                      (_) => Size.fromHeight(44),
+                child: Visibility(
+                  visible: !isWordValid.value,
+                  replacement: ElevatedButton.icon(
+                    icon: Icon(Icons.fast_forward),
+                    onPressed: () {
+                      ref
+                          .read(currentWordProvider.notifier)
+                          .generateRandomWord();
+                      final word = ref.read(currentWordProvider);
+                      if (word != null) {
+                        controller.value.updateExpectedWord(word.nativeWord);
+                      }
+                      didTextHint.value = false;
+                      isWordValid.value = false;
+                    },
+                    label: Text('NEXT WORD'),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.resolveWith(
+                        (_) => Size.fromHeight(44),
+                      ),
                     ),
                   ),
+                  child: checkButton,
                 ),
               )
             ],
@@ -116,5 +147,5 @@ class WordGuessPage extends HookConsumerWidget {
 extension on WordModel {
   String get textHint => languages['en_EN'] ?? 'No hint for this one';
 
-  String get soundHint => languages[wordLanguage] ?? '';
+  String get soundHint => nativeWord;
 }

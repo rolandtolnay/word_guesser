@@ -1,17 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'char_input_controller.dart';
+
 class CharInputWidget extends StatefulWidget {
-  final String nativeWord;
   final CharInputController controller;
 
-  const CharInputWidget({
-    super.key,
-    required this.nativeWord,
-    required this.controller,
-  });
+  const CharInputWidget({super.key, required this.controller});
 
   @override
   State<CharInputWidget> createState() => _CharInputWidgetState();
@@ -20,44 +15,21 @@ class CharInputWidget extends StatefulWidget {
 class _CharInputWidgetState extends State<CharInputWidget> {
   final focusNode = FocusNode();
 
-  late List<CharState> charStateList;
-
   @override
   void initState() {
     super.initState();
 
-    resetCharState();
     focusNode.requestFocus();
-
     widget.controller.addListener(() {
-      setState(() {
-        resetCharState();
-      });
-    });
-    widget.controller.onValidateWord.listen((_) {
-      final input = widget.controller.text.toLowerCase();
-      final word = widget.nativeWord;
-      for (var i = 0; i < input.length; i++) {
-        if (input[i] == word[i]) {
-          charStateList[i] = CharState.correct;
-        }
-      }
       setState(() {});
     });
-  }
-
-  void resetCharState() {
-    charStateList = List.generate(
-      widget.nativeWord.length,
-      (_) => CharState.neutral,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final word = widget.nativeWord;
+    final word = widget.controller.expectedWord;
 
     final textField = TextFormField(
       focusNode: focusNode,
@@ -82,6 +54,7 @@ class _CharInputWidgetState extends State<CharInputWidget> {
     return Stack(
       children: [
         textField,
+        // TODO(Roland): Consider using Wrap to handle longer words
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
@@ -98,7 +71,7 @@ class _CharInputWidgetState extends State<CharInputWidget> {
                   decoration: BoxDecoration(
                     border: Border.all(),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
-                    color: charStateList[i].color,
+                    color: widget.controller.charSimilarityList[i].color,
                   ),
                   child: Center(
                     child: Text(
@@ -115,32 +88,5 @@ class _CharInputWidgetState extends State<CharInputWidget> {
         ),
       ],
     );
-  }
-}
-
-class CharInputController extends TextEditingController {
-  final _validationController = StreamController<bool>.broadcast();
-
-  Stream<bool> get onValidateWord => _validationController.stream;
-
-  void validateWord() {
-    _validationController.add(true);
-  }
-}
-
-enum CharState {
-  neutral,
-  warm,
-  correct;
-
-  Color? get color {
-    switch (this) {
-      case CharState.neutral:
-        return Colors.grey[300];
-      case CharState.warm:
-        return Colors.green[200];
-      case CharState.correct:
-        return Colors.green[600];
-    }
   }
 }

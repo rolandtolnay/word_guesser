@@ -23,10 +23,7 @@ class NameInputDialog extends HookConsumerWidget {
     final textTheme = theme.textTheme;
 
     final nameController = useTextEditingController();
-    final canSubmit = useState<bool>(false);
-    nameController.addListener(() {
-      canSubmit.value = nameController.text.isNotEmpty;
-    });
+    useListenable(nameController);
 
     return CommonDialog(
       child: Padding(
@@ -56,7 +53,7 @@ class NameInputDialog extends HookConsumerWidget {
               width: 120,
               child: RectangularButton(
                 title: 'READY',
-                enabled: canSubmit.value,
+                enabled: nameController.text.isNotEmpty,
                 onPressed: () {
                   ref
                       .read(userProvider.notifier)
