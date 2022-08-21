@@ -5,21 +5,23 @@ import 'char_input_controller.dart';
 
 class CharInputWidget extends StatefulWidget {
   final CharInputController controller;
+  final FocusNode? focusNode;
 
-  const CharInputWidget({super.key, required this.controller});
+  const CharInputWidget({super.key, required this.controller, this.focusNode});
 
   @override
   State<CharInputWidget> createState() => _CharInputWidgetState();
 }
 
 class _CharInputWidgetState extends State<CharInputWidget> {
-  final focusNode = FocusNode();
+  late final FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
 
-    focusNode.requestFocus();
+    _focusNode = widget.focusNode ?? FocusNode();
+    _focusNode.requestFocus();
     widget.controller.addListener(() {
       setState(() {});
     });
@@ -32,7 +34,7 @@ class _CharInputWidgetState extends State<CharInputWidget> {
     final word = widget.controller.expectedWord;
 
     final textField = TextFormField(
-      focusNode: focusNode,
+      focusNode: _focusNode,
       controller: widget.controller,
       cursorWidth: 0.01,
       decoration: InputDecoration(

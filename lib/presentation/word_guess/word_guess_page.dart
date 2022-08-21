@@ -35,6 +35,7 @@ class WordGuessPage extends HookConsumerWidget {
     final controller = useState<CharInputController>(
       CharInputController(expectedWord: word.nativeWord),
     );
+    final focusNode = useFocusNode();
 
     final hintRow = Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -64,6 +65,11 @@ class WordGuessPage extends HookConsumerWidget {
         fixedSize: MaterialStateProperty.resolveWith(
           (_) => Size.fromHeight(44),
         ),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
       ),
     );
 
@@ -88,6 +94,7 @@ class WordGuessPage extends HookConsumerWidget {
 
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
@@ -99,36 +106,63 @@ class WordGuessPage extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Text(
-                  'Guess the word',
+                  'Guess the word!',
                   style: textTheme.headline4,
                 ),
               ),
               const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  'GUESSED: ${ref.watch(guessCountProvider)}',
-                  style: textTheme.caption,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: colorScheme.secondary),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: Text(
+                        'GUESSED: ${ref.watch(guessCountProvider)}',
+                        style: textTheme.caption?.copyWith(
+                          color: colorScheme.secondary,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 24),
-                        CachedNetworkImage(
-                          imageUrl: word.imageUrl,
-                          fit: BoxFit.contain,
-                          height: 180,
-                          width: 180,
-                        ),
-                        const SizedBox(height: 24),
-                        CharInputWidget(controller: controller.value),
-                        const SizedBox(height: 16),
-                      ],
+                child: GestureDetector(
+                  onTap: () => focusNode.requestFocus(),
+                  behavior: HitTestBehavior.opaque,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 24),
+                          CachedNetworkImage(
+                            imageUrl: word.imageUrl,
+                            fit: BoxFit.contain,
+                            height: 180,
+                            width: 180,
+                          ),
+                          const SizedBox(height: 24),
+                          CharInputWidget(
+                            controller: controller.value,
+                            focusNode: focusNode,
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
                     ),
                   ),
                 ),
