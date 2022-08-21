@@ -12,6 +12,7 @@ dependencies:
   cached_network_image: ^3.2.1
   cloud_firestore: ^3.4.5
   cloud_firestore_odm: ^1.0.0-dev.27
+  confetti: ^0.7.0
   cupertino_icons: ^1.0.2
   firebase_auth: ^3.6.4
   firebase_core: ^1.21.0

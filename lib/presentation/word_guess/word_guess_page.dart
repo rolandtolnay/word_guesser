@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,10 +8,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../domain/model/word_model.dart';
 import '../common/widgets/loading_scaffold.dart';
+import 'hooks/use_char_input_controller.dart';
+import 'hooks/use_confetti_controller.dart';
 import 'notifiers/current_word_notifier.dart';
 import 'notifiers/guess_count_provider.dart';
 import 'notifiers/word_guess_notifier.dart';
-import 'widgets/char_input_controller.dart';
 import 'widgets/char_input_widget.dart';
 import 'widgets/text_hint_button.dart';
 
@@ -32,10 +34,9 @@ class WordGuessPage extends HookConsumerWidget {
       FlutterTts()..setLanguage('hu-HU'),
     ).value;
 
-    final controller = useState<CharInputController>(
-      CharInputController(expectedWord: word.nativeWord),
-    );
+    final controller = useCharInputController(expectedWord: word.nativeWord);
     final focusNode = useFocusNode();
+    final confettiController = useConfettiController();
 
     final hintRow = Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,9 +56,10 @@ class WordGuessPage extends HookConsumerWidget {
     final checkButton = ElevatedButton.icon(
       icon: Icon(Icons.login),
       onPressed: () {
-        isWordValid.value = controller.value.validateWord();
+        isWordValid.value = controller.validateWord();
         if (isWordValid.value) {
           ref.read(wordGuessProvider).addGuessedWord(word);
+          confettiController.play();
         }
       },
       label: Text('SUBMIT'),
@@ -79,12 +81,12 @@ class WordGuessPage extends HookConsumerWidget {
         ref.read(currentWordProvider.notifier).generateRandomWord();
         final word = ref.read(currentWordProvider);
         if (word != null) {
-          controller.value.updateExpectedWord(word.nativeWord);
+          controller.updateExpectedWord(word.nativeWord);
         }
         didTextHint.value = false;
         isWordValid.value = false;
       },
-      label: Text('NEXT WORD'),
+      label: Text('GUESS ANOTHER'),
       style: ButtonStyle(
         fixedSize: MaterialStateProperty.resolveWith(
           (_) => Size.fromHeight(44),
@@ -139,30 +141,55 @@ class WordGuessPage extends HookConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: GestureDetector(
                   onTap: () => focusNode.requestFocus(),
-                  behavior: HitTestBehavior.opaque,
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 24),
-                          CachedNetworkImage(
-                            imageUrl: word.imageUrl,
-                            fit: BoxFit.contain,
-                            height: 180,
-                            width: 180,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 120,
+                          right: MediaQuery.of(context).size.width / 2,
+                          child: ConfettiWidget(
+                            emissionFrequency: 1,
+                            numberOfParticles: 4,
+                            minimumSize: const Size(4, 4),
+                            maximumSize: const Size(12, 12),
+                            confettiController: confettiController,
+                            blastDirectionality: BlastDirectionality.explosive,
+                            colors: const <Color>[
+                              Colors.greenAccent,
+                              Colors.blue,
+                              Colors.pink,
+                              Colors.deepOrange,
+                              Colors.deepPurpleAccent,
+                              Colors.purpleAccent,
+                              Colors.yellow,
+                              Colors.lightBlueAccent,
+                            ],
                           ),
-                          const SizedBox(height: 24),
-                          CharInputWidget(
-                            controller: controller.value,
-                            focusNode: focusNode,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 24),
+                              CachedNetworkImage(
+                                imageUrl: word.imageUrl,
+                                fit: BoxFit.contain,
+                                height: 180,
+                                width: 180,
+                              ),
+                              const SizedBox(height: 24),
+                              CharInputWidget(
+                                controller: controller,
+                                focusNode: focusNode,
+                              ),
+                              const SizedBox(height: 16),
+                            ],
                           ),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -177,7 +204,7 @@ class WordGuessPage extends HookConsumerWidget {
                   replacement: nextWordButton,
                   child: checkButton,
                 ),
-              )
+              ),
             ],
           ),
         ),
