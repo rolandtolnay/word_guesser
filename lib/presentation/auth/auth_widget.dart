@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/model/user_entity.dart';
 import '../common/use_init_hook.dart';
 import '../common/widgets/loading_scaffold.dart';
-import '../guess_word/word_fetcher_widget.dart';
+import '../word_guess/widgets/word_fetcher_widget.dart';
 import 'name_input_dialog.dart';
 import 'user_notifier.dart';
 

@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../domain/model/word_model.dart';
-import '../common/use_init_hook.dart';
-import '../common/widgets/loading_scaffold.dart';
-import 'guess_word_page.dart';
-import 'word_list_notifier.dart';
+import '../../../domain/model/word_model.dart';
+import '../../common/use_init_hook.dart';
+import '../../common/widgets/loading_scaffold.dart';
+import '../word_guess_page.dart';
+import '../word_list_notifier.dart';
 
 class WordFetcherWidget extends HookConsumerWidget {
   const WordFetcherWidget({super.key});
@@ -18,7 +18,7 @@ class WordFetcherWidget extends HookConsumerWidget {
 
     final wordListNotifier = ref.watch(wordListProvider);
     return wordListNotifier.state.maybeWhen(
-      success: (wordList) => GuessWordPage(word: wordList.randomWord),
+      success: (wordList) => WordGuessPage(word: wordList.randomWord),
       orElse: () => LoadingScaffold(),
     );
   }
@@ -27,6 +27,7 @@ class WordFetcherWidget extends HookConsumerWidget {
 extension on List<WordModel> {
   WordModel get randomWord {
     final random = Random();
-    return this[random.nextInt(length)];
+    final filtered = where((e) => e.languages[wordLanguage]!.length > 3);
+    return filtered.toList()[random.nextInt(filtered.length)];
   }
 }
