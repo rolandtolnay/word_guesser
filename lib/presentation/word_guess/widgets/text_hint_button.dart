@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
-class TextHintButton extends HookWidget {
+class TextHintButton extends StatelessWidget {
   final String hint;
+  final bool used;
+  final VoidCallback? onTapped;
 
-  const TextHintButton({required this.hint, super.key});
+  const TextHintButton({
+    required this.hint,
+    required this.used,
+    this.onTapped,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final didUseHint = useState<bool>(false);
-
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final hintColor = colorScheme.tertiary;
     return TextButton.icon(
-      onPressed: didUseHint.value ? null : () => didUseHint.value = true,
-      icon: didUseHint.value ? SizedBox.shrink() : Icon(Icons.edit),
-      label: didUseHint.value
+      onPressed: used ? null : onTapped,
+      icon: used ? SizedBox.shrink() : Icon(Icons.edit),
+      label: used
           ? Text(
               hint.toUpperCase(),
-              style: TextStyle(color: colorScheme.onSurface),
+              style: TextStyle(color: hintColor),
             )
           : Text('ENGLISH'),
       style: ButtonStyle(
@@ -27,14 +32,9 @@ class TextHintButton extends HookWidget {
               ? const EdgeInsets.fromLTRB(12, 8, 20, 8)
               : null,
         ),
-        foregroundColor: MaterialStateProperty.resolveWith(
-          (states) => states.isDisabled ? colorScheme.primary : null,
-        ),
         side: MaterialStateProperty.resolveWith(
           (states) {
-            return states.isDisabled
-                ? BorderSide(color: colorScheme.onSurface)
-                : null;
+            return states.isDisabled ? BorderSide(color: hintColor) : null;
           },
         ),
       ),

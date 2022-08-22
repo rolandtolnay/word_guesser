@@ -51,7 +51,36 @@ class WordGuessPage extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const Spacer(),
-        TextHintButton(hint: word.textHint, key: ValueKey(word.textHint)),
+        TextHintButton(
+          hint: word.textHint,
+          used: didTextHint.value,
+          onTapped: () async {
+            final confirm = await showDialog<bool>(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text(
+                    "There are no limits to how many hints you can use, but don't get used to it ;)",
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text('CANCEL'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text('SHOW HINT'),
+                    ),
+                  ],
+                );
+              },
+            );
+            if (confirm != null && confirm) {
+              didTextHint.value = true;
+            }
+          },
+        ),
         const Spacer(),
         TextButton.icon(
           onPressed: () => textToSpeech.speak(word.soundHint),
@@ -71,6 +100,7 @@ class WordGuessPage extends HookConsumerWidget {
           audioPlayer.play(AssetSource('sounds/reward_sound.wav'));
           confettiController.play();
           HapticFeedback.vibrate();
+          didTextHint.value = true;
         } else {
           HapticFeedback.heavyImpact();
         }
@@ -222,7 +252,7 @@ class WordGuessPage extends HookConsumerWidget {
 }
 
 extension on WordModel {
-  String get textHint => translations['en_EN'] ?? 'No hint for this one';
+  String get textHint => englishWord;
 
   String get soundHint => nativeWord;
 }
