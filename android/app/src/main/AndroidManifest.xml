@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.word_guesser">
+    package="com.mindsystemsolutions.wordaroo">
    <application
         android:label="word_guesser"
         android:name="${applicationName}"

@@ -35,14 +35,12 @@ class WordGuessPage extends HookConsumerWidget {
     final didTextHint = useState<bool>(false);
     final isWordValid = useState<bool>(false);
 
-    final textToSpeech = useState<FlutterTts>(
-      FlutterTts()..setLanguage(gameLanguage),
-    ).value;
+    final textToSpeech = useState(FlutterTtsFactory.make()).value;
 
     final controller = useCharInputController(expectedWord: word.nativeWord);
     final focusNode = useFocusNode();
     final confettiController = useConfettiController();
-    final audioPlayer = useState(AudioPlayer());
+    final audioPlayer = useState(AudioPlayer()..setVolume(1));
 
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -71,6 +69,9 @@ class WordGuessPage extends HookConsumerWidget {
           ref.read(wordGuessProvider).addGuessedWord(word);
           audioPlayer.value.play(AssetSource('sounds/reward_sound.wav'));
           confettiController.play();
+          HapticFeedback.vibrate();
+        } else {
+          HapticFeedback.heavyImpact();
         }
       },
       label: Text('SUBMIT'),
@@ -223,4 +224,22 @@ extension on WordModel {
   String get textHint => translations['en_EN'] ?? 'No hint for this one';
 
   String get soundHint => nativeWord;
+}
+
+extension FlutterTtsFactory on FlutterTts {
+  static FlutterTts make() {
+    return FlutterTts()
+      ..setLanguage(gameLanguage)
+      ..setVolume(1)
+      ..setIosAudioCategory(
+        IosTextToSpeechAudioCategory.playback,
+        [
+          IosTextToSpeechAudioCategoryOptions.allowBluetooth,
+          IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
+          IosTextToSpeechAudioCategoryOptions.mixWithOthers,
+          IosTextToSpeechAudioCategoryOptions.defaultToSpeaker,
+        ],
+        IosTextToSpeechAudioMode.voicePrompt,
+      );
+  }
 }

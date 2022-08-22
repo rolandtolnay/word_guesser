@@ -1,4 +1,4 @@
-package com.example.word_guesser
+package com.mindsystemsolutions.wordaroo
 
 import io.flutter.embedding.android.FlutterActivity
 
