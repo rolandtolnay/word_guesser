@@ -17,60 +17,72 @@ class NameInputPage extends HookConsumerWidget {
     final nameController = useTextEditingController();
     useListenable(nameController);
 
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 24),
-              Text(
-                'Hi, and welcome to',
-                style: textTheme.headline3,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Image(image: AssetImage('assets/images/logo_slim.png')),
-              const SizedBox(height: 24),
-              Text(
-                'Learn a new language. \nOne image at a time.',
-                textAlign: TextAlign.center,
-                style: textTheme.headline6,
-              ),
-              const SizedBox(height: 80),
-              Text('Whats your name?', style: textTheme.headline4),
-              const SizedBox(height: 8),
-              TextField(
-                controller: nameController,
-                style: textTheme.subtitle1,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 24),
+                Text(
+                  'Hi, and welcome to',
+                  style: textTheme.headline3,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Image(image: AssetImage('assets/images/logo_slim.png')),
+                const SizedBox(height: 24),
+                Text(
+                  'Learn a new language. \nOne image at a time.',
+                  textAlign: TextAlign.center,
+                  style: textTheme.headline6,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Spacer(),
+                      Text('Whats your name?', style: textTheme.headline4),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: nameController,
+                        style: textTheme.subtitle1,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        textCapitalization: TextCapitalization.sentences,
+                      ),
+                      const SizedBox(height: 16),
+                      RectangularButton(
+                        title: 'NEXT',
+                        enabled: nameController.text.isNotEmpty,
+                        onPressed: () {
+                          ref
+                              .read(userProvider.notifier)
+                              .updateDisplayName(nameController.text.trim());
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute<dynamic>(
+                              builder: (_) => GameModePickerPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      Spacer(flex: 3)
+                    ],
                   ),
                 ),
-                textCapitalization: TextCapitalization.sentences,
-              ),
-              const SizedBox(height: 16),
-              RectangularButton(
-                title: 'NEXT',
-                enabled: nameController.text.isNotEmpty,
-                onPressed: () {
-                  ref
-                      .read(userProvider.notifier)
-                      .updateDisplayName(nameController.text.trim());
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute<dynamic>(
-                      builder: (_) => GameModePickerPage(),
-                    ),
-                  );
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
