@@ -16,8 +16,7 @@ import 'notifiers/word_guess_notifier.dart';
 import 'widgets/char_input_widget.dart';
 import 'widgets/text_hint_button.dart';
 
-// TODO(Roland): Refactor words to use hu-HU and correct tts below
-const wordLanguage = 'hu_HU';
+const gameLanguage = 'hu-HU';
 
 class WordGuessPage extends HookConsumerWidget {
   const WordGuessPage({super.key});
@@ -31,7 +30,7 @@ class WordGuessPage extends HookConsumerWidget {
     final isWordValid = useState<bool>(false);
 
     final textToSpeech = useState<FlutterTts>(
-      FlutterTts()..setLanguage('hu-HU'),
+      FlutterTts()..setLanguage(gameLanguage),
     ).value;
 
     final controller = useCharInputController(expectedWord: word.nativeWord);
@@ -215,7 +214,7 @@ class WordGuessPage extends HookConsumerWidget {
 }
 
 extension on WordModel {
-  String get textHint => languages['en_EN'] ?? 'No hint for this one';
+  String get textHint => translations['en_EN'] ?? 'No hint for this one';
 
   String get soundHint => nativeWord;
 }

@@ -34,7 +34,7 @@ class Application extends StatelessWidget {
           blendOnColors: false,
         ),
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
-        fontFamily: GoogleFonts.rubik().fontFamily,
+        fontFamily: GoogleFonts.cabin().fontFamily,
       ),
       darkTheme: FlexThemeData.dark(
         scheme: FlexScheme.materialBaseline,
@@ -46,7 +46,7 @@ class Application extends StatelessWidget {
           blendOnLevel: 30,
         ),
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
-        fontFamily: GoogleFonts.rubik().fontFamily,
+        fontFamily: GoogleFonts.cabin().fontFamily,
       ),
       themeMode: ThemeMode.light,
       home: AuthWidget(),

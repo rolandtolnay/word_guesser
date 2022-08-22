@@ -125,6 +125,7 @@ abstract class UserEntityDocumentReference
   Future<void> update({
     String id,
     String? displayName,
+    DateTime createdAt,
     List<String> guessedWords,
   });
 
@@ -172,11 +173,13 @@ class _$UserEntityDocumentReference
   Future<void> update({
     Object? id = _sentinel,
     Object? displayName = _sentinel,
+    Object? createdAt = _sentinel,
     Object? guessedWords = _sentinel,
   }) async {
     final json = {
       if (id != _sentinel) "id": id as String,
       if (displayName != _sentinel) "displayName": displayName as String?,
+      if (createdAt != _sentinel) "createdAt": createdAt as DateTime,
       if (guessedWords != _sentinel)
         "guessedWords": guessedWords as List<String>,
     };
@@ -326,6 +329,17 @@ abstract class UserEntityQuery
     List<String?>? whereIn,
     List<String?>? whereNotIn,
   });
+  UserEntityQuery whereCreatedAt({
+    DateTime? isEqualTo,
+    DateTime? isNotEqualTo,
+    DateTime? isLessThan,
+    DateTime? isLessThanOrEqualTo,
+    DateTime? isGreaterThan,
+    DateTime? isGreaterThanOrEqualTo,
+    bool? isNull,
+    List<DateTime>? whereIn,
+    List<DateTime>? whereNotIn,
+  });
   UserEntityQuery whereGuessedWords({
     List<String>? isEqualTo,
     List<String>? isNotEqualTo,
@@ -368,6 +382,18 @@ abstract class UserEntityQuery
     String? startAfter,
     String? endAt,
     String? endBefore,
+    UserEntityDocumentSnapshot? startAtDocument,
+    UserEntityDocumentSnapshot? endAtDocument,
+    UserEntityDocumentSnapshot? endBeforeDocument,
+    UserEntityDocumentSnapshot? startAfterDocument,
+  });
+
+  UserEntityQuery orderByCreatedAt({
+    bool descending = false,
+    DateTime startAt,
+    DateTime startAfter,
+    DateTime endAt,
+    DateTime endBefore,
     UserEntityDocumentSnapshot? startAtDocument,
     UserEntityDocumentSnapshot? endAtDocument,
     UserEntityDocumentSnapshot? endBeforeDocument,
@@ -609,6 +635,34 @@ class _$UserEntityQuery
     );
   }
 
+  UserEntityQuery whereCreatedAt({
+    DateTime? isEqualTo,
+    DateTime? isNotEqualTo,
+    DateTime? isLessThan,
+    DateTime? isLessThanOrEqualTo,
+    DateTime? isGreaterThan,
+    DateTime? isGreaterThanOrEqualTo,
+    bool? isNull,
+    List<DateTime>? whereIn,
+    List<DateTime>? whereNotIn,
+  }) {
+    return _$UserEntityQuery(
+      reference.where(
+        _$UserEntityFieldMap["createdAt"]!,
+        isEqualTo: isEqualTo,
+        isNotEqualTo: isNotEqualTo,
+        isLessThan: isLessThan,
+        isLessThanOrEqualTo: isLessThanOrEqualTo,
+        isGreaterThan: isGreaterThan,
+        isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
+        isNull: isNull,
+        whereIn: whereIn,
+        whereNotIn: whereNotIn,
+      ),
+      _collection,
+    );
+  }
+
   UserEntityQuery whereGuessedWords({
     List<String>? isEqualTo,
     List<String>? isNotEqualTo,
@@ -765,6 +819,49 @@ class _$UserEntityQuery
     return _$UserEntityQuery(query, _collection);
   }
 
+  UserEntityQuery orderByCreatedAt({
+    bool descending = false,
+    Object? startAt = _sentinel,
+    Object? startAfter = _sentinel,
+    Object? endAt = _sentinel,
+    Object? endBefore = _sentinel,
+    UserEntityDocumentSnapshot? startAtDocument,
+    UserEntityDocumentSnapshot? endAtDocument,
+    UserEntityDocumentSnapshot? endBeforeDocument,
+    UserEntityDocumentSnapshot? startAfterDocument,
+  }) {
+    var query = reference.orderBy(_$UserEntityFieldMap["createdAt"]!,
+        descending: descending);
+
+    if (startAtDocument != null) {
+      query = query.startAtDocument(startAtDocument.snapshot);
+    }
+    if (startAfterDocument != null) {
+      query = query.startAfterDocument(startAfterDocument.snapshot);
+    }
+    if (endAtDocument != null) {
+      query = query.endAtDocument(endAtDocument.snapshot);
+    }
+    if (endBeforeDocument != null) {
+      query = query.endBeforeDocument(endBeforeDocument.snapshot);
+    }
+
+    if (startAt != _sentinel) {
+      query = query.startAt([startAt]);
+    }
+    if (startAfter != _sentinel) {
+      query = query.startAfter([startAfter]);
+    }
+    if (endAt != _sentinel) {
+      query = query.endAt([endAt]);
+    }
+    if (endBefore != _sentinel) {
+      query = query.endBefore([endBefore]);
+    }
+
+    return _$UserEntityQuery(query, _collection);
+  }
+
   UserEntityQuery orderByGuessedWords({
     bool descending = false,
     Object? startAt = _sentinel,
@@ -864,11 +961,14 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
+          json['createdAt'], const FirestoreDateTimeConverter().fromJson),
     );
 
 const _$UserEntityFieldMap = <String, String>{
   'id': 'id',
   'displayName': 'displayName',
+  'createdAt': 'createdAt',
   'guessedWords': 'guessedWords',
 };
 
@@ -876,5 +976,13 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
     <String, dynamic>{
       'id': instance.id,
       'displayName': instance.displayName,
+      'createdAt':
+          const FirestoreDateTimeConverter().toJson(instance.createdAt),
       'guessedWords': instance.guessedWords,
     };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);

@@ -760,18 +760,18 @@ class WordModelQueryDocumentSnapshot
 
 WordModel _$WordModelFromJson(Map<String, dynamic> json) => WordModel(
       json['id'] as String,
-      Map<String, String>.from(json['languages'] as Map),
+      Map<String, String>.from(json['translations'] as Map),
       json['imageUrl'] as String,
     );
 
 const _$WordModelFieldMap = <String, String>{
   'id': 'id',
-  'languages': 'languages',
+  'translations': 'translations',
   'imageUrl': 'imageUrl',
 };
 
 Map<String, dynamic> _$WordModelToJson(WordModel instance) => <String, dynamic>{
       'id': instance.id,
-      'languages': instance.languages,
+      'translations': instance.translations,
       'imageUrl': instance.imageUrl,
     };

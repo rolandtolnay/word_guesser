@@ -36,6 +36,8 @@ class CurrentWordNotifier extends StateNotifier<WordModel?> {
     final random = Random();
     var filtered = wordList.where((e) => !guessed.contains(e.id));
     if (filtered.isEmpty) filtered = wordList;
+    // TODO(Roland): Remove length filter after long words supported in UI
+    filtered = filtered.where((e) => e.nativeWord.length < 9);
 
     state = filtered.toList()[random.nextInt(filtered.length)];
   }

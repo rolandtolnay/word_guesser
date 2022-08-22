@@ -8,10 +8,10 @@ part 'word_model.g.dart';
 
 @firestoreSerializable
 class WordModel {
-  WordModel(this.id, this.languages, this.imageUrl);
+  WordModel(this.id, this.translations, this.imageUrl);
 
   final String id;
-  final Map<String, String> languages;
+  final Map<String, String> translations;
   final String imageUrl;
 
   factory WordModel.fromJson(Map<String, dynamic> json) =>
@@ -21,7 +21,9 @@ class WordModel {
 }
 
 extension Convenience on WordModel {
-  String get nativeWord => languages[wordLanguage] ?? '';
+  String get nativeWord => translations[gameLanguage] ?? '';
+
+  String get englishWord => translations['en-EN'] ?? '';
 }
 
 @Collection<WordModel>('words')

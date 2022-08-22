@@ -9,6 +9,7 @@ part 'user_entity.g.dart';
 class UserEntity {
   final String id;
   final String? displayName;
+  final DateTime createdAt;
 
   final List<String> guessedWords;
 
@@ -16,7 +17,8 @@ class UserEntity {
     required this.id,
     this.displayName,
     this.guessedWords = const [],
-  });
+    DateTime? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now();
 
   UserEntity copyWith({
     String? displayName,
@@ -26,6 +28,7 @@ class UserEntity {
         id: id,
         displayName: displayName ?? this.displayName,
         guessedWords: guessedWords ?? this.guessedWords,
+        createdAt: createdAt,
       );
 }
 

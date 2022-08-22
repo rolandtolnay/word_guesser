@@ -25,24 +25,15 @@ class FirAuthRepository implements AuthRepository {
   StreamSubscription<UserEntityDocumentSnapshot>? _collectionListener;
 
   FirAuthRepository() {
-    _auth.userChanges().listen((user) async {
-      if (user == null) {
+    _auth.authStateChanges().listen((firUser) async {
+      if (firUser == null) {
         _userChangedController.add(null);
         await _collectionListener?.cancel();
         return;
       }
 
-      final snap = await usersRef.doc(user.uid).get();
-      if (snap.exists) {
-        await _collectionListener?.cancel();
-        _collectionListener = usersRef.doc(user.uid).snapshots().listen((snap) {
-          _userChangedController.add(snap.data);
-        });
-      } else {
-        _userChangedController.add(
-          UserEntity(id: user.uid, displayName: user.displayName),
-        );
-      }
+      final user = await currentUser;
+      if (user != null) await _listenOnCollectionChanges(user.id);
     });
   }
 
@@ -61,12 +52,17 @@ class FirAuthRepository implements AuthRepository {
   Future<ApiException?> signInAnonymously() async {
     try {
       await _auth.signInAnonymously();
+      final firUser = _auth.currentUser;
+      if (firUser == null) return ApiException('');
 
       final user = await currentUser;
-      if (user != null) {
-        final snap = await usersRef.doc(user.id).get();
-        if (!snap.exists) await usersRef.doc(user.id).set(user);
+      if (user == null) {
+        final id = firUser.uid;
+        final entity = UserEntity(id: id, displayName: firUser.displayName);
+        await usersRef.doc(id).set(entity);
+        await _listenOnCollectionChanges(id);
       }
+
       return null;
     } catch (e, st) {
       dev.log('[ERROR] ${e.toString()}', error: e, stackTrace: st);
@@ -84,13 +80,19 @@ class FirAuthRepository implements AuthRepository {
       await _auth.currentUser?.updateDisplayName(name);
 
       final user = await currentUser;
-      if (user != null) {
-        await usersRef.doc(user.id).update(displayName: name);
-      }
+      if (user != null) await usersRef.doc(user.id).update(displayName: name);
+
       return null;
     } catch (e, st) {
       dev.log('[ERROR] ${e.toString()}', error: e, stackTrace: st);
       return ApiException('$e');
     }
+  }
+
+  Future<void> _listenOnCollectionChanges(String userId) async {
+    await _collectionListener?.cancel();
+    _collectionListener = usersRef.doc(userId).snapshots().listen((snap) {
+      _userChangedController.add(snap.data);
+    });
   }
 }
