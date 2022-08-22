@@ -148,7 +148,7 @@ class WordGuessPage extends HookConsumerWidget {
           vertical: 4,
         ),
         child: Text(
-          'GUESSED: ${ref.watch(guessCountProvider)}',
+          ref.watch(guessCountProvider),
           style: textTheme.caption?.copyWith(
             color: colorScheme.secondary,
           ),
@@ -242,8 +242,6 @@ class WordGuessPage extends HookConsumerWidget {
                     child: checkButton,
                   ),
                 ),
-                const SizedBox(height: 100),
-                Image(image: AssetImage('assets/images/logo_slim.png'))
               ],
             ),
           ),

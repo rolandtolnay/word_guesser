@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../common/widgets/rectangular_button.dart';
-import '../word_guess/widgets/word_fetcher_widget.dart';
+import '../word_guess/game_mode_picker_page.dart';
 import 'user_notifier.dart';
 
 class NameInputPage extends HookConsumerWidget {
@@ -13,7 +13,6 @@ class NameInputPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
 
     final nameController = useTextEditingController();
     useListenable(nameController);
@@ -66,7 +65,7 @@ class NameInputPage extends HookConsumerWidget {
                       .updateDisplayName(nameController.text.trim());
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute<dynamic>(
-                      builder: (_) => WordFetcherWidget(),
+                      builder: (_) => GameModePickerPage(),
                     ),
                   );
                 },

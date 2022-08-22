@@ -4,6 +4,7 @@ import 'package:riverpod/riverpod.dart';
 
 import '../../../domain/model/word_model.dart';
 import '../../auth/user_notifier.dart';
+import 'game_mode_provider.dart';
 import 'word_list_notifier.dart';
 
 final currentWordProvider =
@@ -24,7 +25,16 @@ class CurrentWordNotifier extends StateNotifier<WordModel?> {
     final guessedWords = _ref(userProvider)?.guessedWords ?? [];
 
     final random = Random();
-    var filtered = wordList.where((e) => !guessedWords.contains(e.englishWord));
+    Iterable<WordModel> filtered = wordList;
+    switch (_ref(gameModeProvider)) {
+      case GameMode.discover:
+        filtered = filtered.where((e) => !guessedWords.contains(e.englishWord));
+        break;
+      case GameMode.practice:
+        filtered = filtered.where((e) => guessedWords.contains(e.englishWord));
+        break;
+    }
+
     if (filtered.isEmpty) filtered = wordList;
     // TODO(Roland): Remove length filter after long words supported in UI
     filtered = filtered.where((e) => e.nativeWord.length < 9);
