@@ -2,39 +2,29 @@ import 'dart:math';
 
 import 'package:riverpod/riverpod.dart';
 
-import '../../../domain/model/user_entity.dart';
 import '../../../domain/model/word_model.dart';
 import '../../auth/user_notifier.dart';
 import 'word_list_notifier.dart';
 
 final currentWordProvider =
     StateNotifierProvider<CurrentWordNotifier, WordModel?>(
-  (ref) => CurrentWordNotifier(
-    ref.watch(wordListProvider),
-    ref.watch(userProvider),
-  ),
+  (ref) => CurrentWordNotifier(ref.read),
 );
 
 class CurrentWordNotifier extends StateNotifier<WordModel?> {
-  final WordListNotifier _wordListNotifier;
-  final UserEntity? _currentUser;
+  final Reader _ref;
 
-  CurrentWordNotifier(this._wordListNotifier, this._currentUser) : super(null) {
-    _wordListNotifier.state.maybeWhen(
-      success: (wordList) => generateRandomWord(),
-      orElse: () => null,
-    );
-  }
+  CurrentWordNotifier(this._ref) : super(null);
 
   void generateRandomWord() {
-    final wordList = _wordListNotifier.state.maybeWhen(
-      success: (wordList) => wordList,
-      orElse: () => <WordModel>[],
-    );
+    final wordList = _ref(wordListProvider).state.maybeWhen(
+          success: (wordList) => wordList,
+          orElse: () => <WordModel>[],
+        );
+    final guessedWords = _ref(userProvider)?.guessedWords ?? [];
 
-    final guessed = _currentUser?.guessedWords ?? [];
     final random = Random();
-    var filtered = wordList.where((e) => !guessed.contains(e.nativeWord));
+    var filtered = wordList.where((e) => !guessedWords.contains(e.englishWord));
     if (filtered.isEmpty) filtered = wordList;
     // TODO(Roland): Remove length filter after long words supported in UI
     filtered = filtered.where((e) => e.nativeWord.length < 9);

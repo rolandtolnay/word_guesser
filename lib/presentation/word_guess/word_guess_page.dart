@@ -8,6 +8,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../domain/model/word_model.dart';
+import '../common/use_init_hook.dart';
 import '../common/widgets/loading_scaffold.dart';
 import 'hooks/use_char_input_controller.dart';
 import 'hooks/use_confetti_controller.dart';
@@ -24,6 +25,10 @@ class WordGuessPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    useInitAsync(
+      () => ref.read(currentWordProvider.notifier).generateRandomWord(),
+    );
+
     final word = ref.watch(currentWordProvider);
     if (word == null) return LoadingScaffold();
 
@@ -38,6 +43,10 @@ class WordGuessPage extends HookConsumerWidget {
     final focusNode = useFocusNode();
     final confettiController = useConfettiController();
     final audioPlayer = useState(AudioPlayer());
+
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     final hintRow = Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -96,9 +105,25 @@ class WordGuessPage extends HookConsumerWidget {
       ),
     );
 
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final guessCount = DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: colorScheme.secondary),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 4,
+        ),
+        child: Text(
+          'GUESSED: ${ref.watch(guessCountProvider)}',
+          style: textTheme.caption?.copyWith(
+            color: colorScheme.secondary,
+          ),
+        ),
+      ),
+    );
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
@@ -107,37 +132,12 @@ class WordGuessPage extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    'Guess the word!',
-                    style: textTheme.headline4,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: colorScheme.secondary),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        child: Text(
-                          'GUESSED: ${ref.watch(guessCountProvider)}',
-                          style: textTheme.caption?.copyWith(
-                            color: colorScheme.secondary,
-                          ),
-                        ),
-                      ),
-                    ),
+                const SizedBox(height: 24),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: guessCount,
                   ),
                 ),
                 Padding(
@@ -199,7 +199,7 @@ class WordGuessPage extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 SizedBox(height: 40, child: hintRow),
                 const SizedBox(height: 8),
                 Padding(
