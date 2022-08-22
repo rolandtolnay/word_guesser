@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/model/word_model.dart';
 import '../common/use_init_hook.dart';
 import '../common/widgets/loading_scaffold.dart';
+import 'hooks/use_audio_player.dart';
 import 'hooks/use_char_input_controller.dart';
 import 'hooks/use_confetti_controller.dart';
 import 'notifiers/current_word_notifier.dart';
@@ -40,7 +41,7 @@ class WordGuessPage extends HookConsumerWidget {
     final controller = useCharInputController(expectedWord: word.nativeWord);
     final focusNode = useFocusNode();
     final confettiController = useConfettiController();
-    final audioPlayer = useState(AudioPlayer()..setVolume(1));
+    final audioPlayer = useAudioPlayer();
 
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -67,7 +68,7 @@ class WordGuessPage extends HookConsumerWidget {
         isWordValid.value = controller.validateWord();
         if (isWordValid.value) {
           ref.read(wordGuessProvider).addGuessedWord(word);
-          audioPlayer.value.play(AssetSource('sounds/reward_sound.wav'));
+          audioPlayer.play(AssetSource('sounds/reward_sound.wav'));
           confettiController.play();
           HapticFeedback.vibrate();
         } else {
