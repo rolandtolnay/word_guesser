@@ -14,14 +14,20 @@ class RectangularButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     return ElevatedButton(
       onPressed: enabled ? onPressed : null,
       style: ButtonStyle(
         fixedSize: MaterialStateProperty.resolveWith(
-          (_) => Size.fromHeight(44),
+          (_) => Size.fromHeight(48),
         ),
       ),
-      child: Text(title),
+      child: Text(
+        title,
+        style: textTheme.subtitle1?.copyWith(color: colorScheme.onPrimary),
+      ),
     );
   }
 }

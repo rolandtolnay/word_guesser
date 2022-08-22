@@ -242,6 +242,8 @@ class WordGuessPage extends HookConsumerWidget {
                     child: checkButton,
                   ),
                 ),
+                const SizedBox(height: 100),
+                Image(image: AssetImage('assets/images/logo_slim.png'))
               ],
             ),
           ),
