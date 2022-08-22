@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class WordGuessPage extends HookConsumerWidget {
     final controller = useCharInputController(expectedWord: word.nativeWord);
     final focusNode = useFocusNode();
     final confettiController = useConfettiController();
+    final audioPlayer = useState(AudioPlayer());
 
     final hintRow = Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -58,6 +60,7 @@ class WordGuessPage extends HookConsumerWidget {
         isWordValid.value = controller.validateWord();
         if (isWordValid.value) {
           ref.read(wordGuessProvider).addGuessedWord(word);
+          audioPlayer.value.play(AssetSource('sounds/reward_sound.wav'));
           confettiController.play();
         }
       },
@@ -100,112 +103,115 @@ class WordGuessPage extends HookConsumerWidget {
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  'Guess the word!',
-                  style: textTheme.headline4,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    'Guess the word!',
+                    style: textTheme.headline4,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: colorScheme.secondary),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: colorScheme.secondary),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(
-                        'GUESSED: ${ref.watch(guessCountProvider)}',
-                        style: textTheme.caption?.copyWith(
-                          color: colorScheme.secondary,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        child: Text(
+                          'GUESSED: ${ref.watch(guessCountProvider)}',
+                          style: textTheme.caption?.copyWith(
+                            color: colorScheme.secondary,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: GestureDetector(
-                  onTap: () => focusNode.requestFocus(),
-                  child: Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 120,
-                          right: MediaQuery.of(context).size.width / 2,
-                          child: ConfettiWidget(
-                            emissionFrequency: 1,
-                            numberOfParticles: 4,
-                            minimumSize: const Size(4, 4),
-                            maximumSize: const Size(12, 12),
-                            confettiController: confettiController,
-                            blastDirectionality: BlastDirectionality.explosive,
-                            colors: const <Color>[
-                              Colors.greenAccent,
-                              Colors.blue,
-                              Colors.pink,
-                              Colors.deepOrange,
-                              Colors.deepPurpleAccent,
-                              Colors.purpleAccent,
-                              Colors.yellow,
-                              Colors.lightBlueAccent,
-                            ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: GestureDetector(
+                    onTap: () => focusNode.requestFocus(),
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            top: 120,
+                            right: MediaQuery.of(context).size.width / 2,
+                            child: ConfettiWidget(
+                              emissionFrequency: 1,
+                              numberOfParticles: 4,
+                              minimumSize: const Size(4, 4),
+                              maximumSize: const Size(12, 12),
+                              confettiController: confettiController,
+                              blastDirectionality:
+                                  BlastDirectionality.explosive,
+                              colors: const <Color>[
+                                Colors.greenAccent,
+                                Colors.blue,
+                                Colors.pink,
+                                Colors.deepOrange,
+                                Colors.deepPurpleAccent,
+                                Colors.purpleAccent,
+                                Colors.yellow,
+                                Colors.lightBlueAccent,
+                              ],
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 24),
-                              CachedNetworkImage(
-                                imageUrl: word.imageUrl,
-                                fit: BoxFit.contain,
-                                height: 180,
-                                width: 180,
-                              ),
-                              const SizedBox(height: 24),
-                              CharInputWidget(
-                                controller: controller,
-                                focusNode: focusNode,
-                              ),
-                              const SizedBox(height: 16),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 24),
+                                CachedNetworkImage(
+                                  imageUrl: word.imageUrl,
+                                  fit: BoxFit.contain,
+                                  height: 180,
+                                  width: 180,
+                                ),
+                                const SizedBox(height: 24),
+                                CharInputWidget(
+                                  controller: controller,
+                                  focusNode: focusNode,
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(height: 40, child: hintRow),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 48),
-                child: Visibility(
-                  visible: !isWordValid.value,
-                  replacement: nextWordButton,
-                  child: checkButton,
+                const SizedBox(height: 24),
+                SizedBox(height: 40, child: hintRow),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 48),
+                  child: Visibility(
+                    visible: !isWordValid.value,
+                    replacement: nextWordButton,
+                    child: checkButton,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

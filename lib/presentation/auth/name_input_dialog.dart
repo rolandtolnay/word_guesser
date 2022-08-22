@@ -46,7 +46,7 @@ class NameInputDialog extends HookConsumerWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              onChanged: (_) {},
+              textCapitalization: TextCapitalization.sentences,
             ),
             const SizedBox(height: 24),
             SizedBox(

@@ -5,13 +5,15 @@ import 'firestore_serializable_annotation.dart';
 
 part 'user_entity.g.dart';
 
+typedef EnglishTranslation = String;
+
 @firestoreSerializable
 class UserEntity {
   final String id;
   final String? displayName;
   final DateTime createdAt;
 
-  final List<String> guessedWords;
+  final List<EnglishTranslation> guessedWords;
 
   UserEntity({
     required this.id,

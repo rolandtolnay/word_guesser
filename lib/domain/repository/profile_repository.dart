@@ -18,7 +18,7 @@ class FirProfileRepository implements ProfileRepository {
     WordModel word, {
     required UserEntity user,
   }) async {
-    final guessed = user.guessedWords + [word.id];
+    final guessed = user.guessedWords + [word.englishWord.toLowerCase()];
     final updatedUser = user.copyWith(guessedWords: guessed.unique);
     await usersRef.doc(user.id).set(updatedUser);
     return updatedUser.guessedWords;

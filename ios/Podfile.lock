@@ -1,4 +1,6 @@
 PODS:
+  - audioplayers_darwin (0.0.1):
+    - Flutter
   - cloud_firestore (3.4.5):
     - Firebase/Firestore (= 9.4.0)
     - firebase_core
@@ -82,6 +84,7 @@ PODS:
     - FMDB (>= 2.7.5)
 
 DEPENDENCIES:
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -106,6 +109,8 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_auth:
@@ -130,6 +135,7 @@ CHECKOUT OPTIONS:
     :tag: 9.4.0
 
 SPEC CHECKSUMS:
+  audioplayers_darwin: 387322cb364026a1782298c982693b1b6aa9fa1b
   cloud_firestore: af9ba1a016f211cc144de1b12f830efdc7677747
   Firebase: 7703fc4022824b6d6db1bf7bea58d13b8e17ec46
   firebase_auth: d858056948955e9adb6be1d7e4cbf03ab3a9fc46
