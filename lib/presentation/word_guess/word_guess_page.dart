@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:word_guesser/presentation/word_guess/game_mode_picker_page.dart';
+import 'package:word_guesser/presentation/word_guess/notifiers/guess_count_provider.dart';
 
 import '../../domain/model/word_model.dart';
 import '../common/use_init_hook.dart';
@@ -14,7 +16,7 @@ import 'hooks/use_audio_player.dart';
 import 'hooks/use_char_input_controller.dart';
 import 'hooks/use_confetti_controller.dart';
 import 'notifiers/current_word_notifier.dart';
-import 'notifiers/guess_count_provider.dart';
+import 'notifiers/game_mode_provider.dart';
 import 'notifiers/word_guess_notifier.dart';
 import 'widgets/char_input_widget.dart';
 import 'widgets/text_hint_button.dart';
@@ -137,23 +139,33 @@ class WordGuessPage extends HookConsumerWidget {
       ),
     );
 
-    final guessCount = DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: colorScheme.secondary),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 4,
-        ),
-        child: Text(
-          ref.watch(guessCountProvider),
-          style: textTheme.caption?.copyWith(
-            color: colorScheme.secondary,
+    final mode = ref.watch(gameModeProvider);
+    final count = ref.watch(guessCountProvider);
+    final guessCount = Row(
+      children: [
+        Align(
+          alignment: Alignment(0, 0.7),
+          child: Text(
+            mode.guessedDescription,
+            style: textTheme.subtitle1?.copyWith(
+              color: colorScheme.tertiary,
+            ),
           ),
         ),
-      ),
+        if (count != null) ...[
+          SizedBox(width: 8),
+          Align(
+            alignment: Alignment(0, 0.8),
+            child: Text(
+              '$count',
+              style: textTheme.headline4?.copyWith(
+                color: colorScheme.tertiary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        ]
+      ],
     );
 
     return AnnotatedRegion(
@@ -164,12 +176,35 @@ class WordGuessPage extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 24),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: guessCount,
+                SizedBox(
+                  height: 64,
+                  child: Row(
+                    children: [
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: guessCount,
+                        ),
+                      ),
+                      Spacer(),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.menu,
+                            size: 36,
+                            color: colorScheme.primary,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              GameModePickerPage.route(),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                    ],
                   ),
                 ),
                 Padding(
@@ -272,5 +307,17 @@ extension FlutterTtsFactory on FlutterTts {
         ],
         IosTextToSpeechAudioMode.voicePrompt,
       );
+  }
+}
+
+extension on GameMode {
+  String get guessedDescription {
+    switch (this) {
+      case GameMode.discover:
+        return 'WORDS GUESSED: ';
+
+      case GameMode.practice:
+        return 'PRACTICE';
+    }
   }
 }

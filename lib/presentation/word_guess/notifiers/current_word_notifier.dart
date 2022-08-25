@@ -28,10 +28,14 @@ class CurrentWordNotifier extends StateNotifier<WordModel?> {
     Iterable<WordModel> filtered = wordList;
     switch (_ref(gameModeProvider)) {
       case GameMode.discover:
-        filtered = filtered.where((e) => !guessedWords.contains(e.englishWord));
+        filtered = filtered.where(
+          (e) => !guessedWords.contains(e.englishWord.toLowerCase()),
+        );
         break;
       case GameMode.practice:
-        filtered = filtered.where((e) => guessedWords.contains(e.englishWord));
+        filtered = filtered.where(
+          (e) => guessedWords.contains(e.englishWord.toLowerCase()),
+        );
         break;
     }
 

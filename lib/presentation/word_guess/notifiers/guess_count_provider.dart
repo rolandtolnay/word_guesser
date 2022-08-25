@@ -1,18 +1,13 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:word_guesser/presentation/word_guess/notifiers/game_mode_provider.dart';
 
 import '../../auth/user_notifier.dart';
-import 'game_mode_provider.dart';
-import 'word_list_notifier.dart';
 
-final guessCountProvider = Provider<String>((ref) {
+// TODO(Roland): Clean this up
+final guessCountProvider = Provider<int?>((ref) {
   final mode = ref.watch(gameModeProvider);
-  if (mode == GameMode.practice) return 'PRACTICE';
+  if (mode == GameMode.practice) return null;
 
   final guessedWords = ref.watch(userProvider)?.guessedWords.length ?? 0;
-  final totalWords = ref.watch(wordListProvider).state.maybeWhen(
-        success: (wordList) => wordList.length,
-        orElse: () => 0,
-      );
-
-  return 'GUESSED: $guessedWords / $totalWords';
+  return guessedWords;
 });

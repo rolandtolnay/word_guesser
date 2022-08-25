@@ -72,9 +72,16 @@ class _CharInputWidgetState extends State<CharInputWidget> {
                   width: 40,
                   height: 44,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Color(0xff1e272e)),
+                    border: Border.all(
+                      color: i <= input.length
+                          ? Color(0xff1e272e)
+                          : Color(0xff8f9397),
+                      width: i == input.length ? 2 : 1,
+                    ),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
-                    color: widget.controller.charSimilarityList[i].color,
+                    color: i <= input.length
+                        ? widget.controller.charSimilarityList[i].color
+                        : Color(0xffe9edf1),
                   ),
                   child: Center(
                     child: Text(

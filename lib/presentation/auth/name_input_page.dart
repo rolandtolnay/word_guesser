@@ -71,9 +71,7 @@ class NameInputPage extends HookConsumerWidget {
                               .read(userProvider.notifier)
                               .updateDisplayName(nameController.text.trim());
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute<dynamic>(
-                              builder: (_) => GameModePickerPage(),
-                            ),
+                            GameModePickerPage.route(),
                           );
                         },
                       ),
