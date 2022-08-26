@@ -9,6 +9,10 @@ import '../word_guess_page.dart';
 class WordFetcherWidget extends HookConsumerWidget {
   const WordFetcherWidget({super.key});
 
+  static MaterialPageRoute<dynamic> route() {
+    return MaterialPageRoute<dynamic>(builder: (_) => WordFetcherWidget());
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useInitAsync(() => ref.read(wordListProvider.notifier).fetchAllWords());

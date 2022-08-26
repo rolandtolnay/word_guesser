@@ -38,9 +38,12 @@ class WordGuessPage extends HookConsumerWidget {
     final didTextHint = useState<bool>(false);
     final isWordValid = useState<bool>(false);
 
-    final textToSpeech = useState(FlutterTtsFactory.make()).value;
-
     final controller = useCharInputController(expectedWord: word.nativeWord);
+    ref.listen<WordModel?>(currentWordProvider, (_, next) {
+      if (next != null) controller.updateExpectedWord(next.nativeWord);
+    });
+
+    final textToSpeech = useState(FlutterTtsFactory.make()).value;
     final focusNode = useFocusNode();
     final confettiController = useConfettiController();
     final audioPlayer = useAudioPlayer();
@@ -124,10 +127,6 @@ class WordGuessPage extends HookConsumerWidget {
       icon: Icon(Icons.fast_forward),
       onPressed: () {
         ref.read(currentWordProvider.notifier).generateRandomWord();
-        final word = ref.read(currentWordProvider);
-        if (word != null) {
-          controller.updateExpectedWord(word.nativeWord);
-        }
         didTextHint.value = false;
         isWordValid.value = false;
       },

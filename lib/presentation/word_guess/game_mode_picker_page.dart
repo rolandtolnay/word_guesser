@@ -47,10 +47,9 @@ class GameModePickerPage extends HookConsumerWidget {
                   onTap: () {
                     ref.read(gameModeProvider.notifier).state =
                         GameMode.discover;
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute<dynamic>(
-                        builder: (_) => WordFetcherWidget(),
-                      ),
+                    Navigator.of(context).pushAndRemoveUntil(
+                      WordFetcherWidget.route(),
+                      (route) => false,
                     );
                   },
                   child: Container(
@@ -84,10 +83,9 @@ class GameModePickerPage extends HookConsumerWidget {
                       ? () {
                           ref.read(gameModeProvider.notifier).state =
                               GameMode.practice;
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute<dynamic>(
-                              builder: (_) => WordFetcherWidget(),
-                            ),
+                          Navigator.of(context).pushAndRemoveUntil(
+                            WordFetcherWidget.route(),
+                            (route) => false,
                           );
                         }
                       : null,
