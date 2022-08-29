@@ -21,9 +21,9 @@ class WordModel {
 }
 
 extension Convenience on WordModel {
-  String get nativeWord => translations[gameLanguage] ?? '';
+  String get nativeWord => (translations[gameLanguage] ?? '').toLowerCase();
 
-  String get englishWord => translations['en-EN'] ?? '';
+  String get englishWord => (translations['en-EN'] ?? '').toLowerCase();
 }
 
 @Collection<WordModel>('words')

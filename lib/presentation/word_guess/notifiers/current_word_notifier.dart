@@ -14,6 +14,7 @@ final currentWordProvider =
 
 class CurrentWordNotifier extends StateNotifier<WordModel?> {
   final Reader _ref;
+  final random = Random();
 
   CurrentWordNotifier(this._ref) : super(null);
 
@@ -24,18 +25,15 @@ class CurrentWordNotifier extends StateNotifier<WordModel?> {
         );
     final guessedWords = _ref(userProvider)?.guessedWords ?? [];
 
-    final random = Random();
     Iterable<WordModel> filtered = wordList;
     switch (_ref(gameModeProvider)) {
       case GameMode.discover:
-        filtered = filtered.where(
-          (e) => !guessedWords.contains(e.englishWord.toLowerCase()),
-        );
+        filtered = filtered.where((e) => !guessedWords.contains(e.englishWord));
         break;
       case GameMode.practice:
-        filtered = filtered.where(
-          (e) => guessedWords.contains(e.englishWord.toLowerCase()),
-        );
+        filtered = filtered.where((e) => guessedWords.contains(e.englishWord));
+        break;
+      case GameMode.reverse:
         break;
     }
 

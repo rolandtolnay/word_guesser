@@ -308,15 +308,3 @@ extension FlutterTtsFactory on FlutterTts {
       );
   }
 }
-
-extension on GameMode {
-  String get guessedDescription {
-    switch (this) {
-      case GameMode.discover:
-        return 'WORDS GUESSED: ';
-
-      case GameMode.practice:
-        return 'PRACTICE';
-    }
-  }
-}
