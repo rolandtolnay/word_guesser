@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../common/use_init_hook.dart';
 import '../common/widgets/loading_scaffold.dart';
-import '../word_guess/game_mode_picker_page.dart';
+import '../menu/game_mode_picker_page.dart';
 import 'name_input_page.dart';
 import 'user_notifier.dart';
 

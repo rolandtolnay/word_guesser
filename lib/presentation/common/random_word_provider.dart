@@ -21,6 +21,7 @@ class RandomWordProvider {
   WordModel? makeRandomGuessedWord() => _makeRandomWord(_guessedWords);
 
   WordModel? _makeRandomWord(Iterable<WordModel> wordList) {
+    if (wordList.isEmpty) return null;
     return wordList.toList()[_random.nextInt(wordList.length)];
   }
 

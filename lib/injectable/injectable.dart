@@ -12,7 +12,7 @@ Future<void> configureDependencies() async => $initGetIt(getIt);
 
 @module
 abstract class AppModule {
-  @injectable
+  @lazySingleton
   FlutterTts get textToSpeech => FlutterTtsFactory.make();
 }
 

@@ -10,7 +10,7 @@ import '../../domain/model/word_model.dart';
 import '../../injectable/injectable.dart';
 import '../common/use_init_hook.dart';
 import '../common/widgets/loading_scaffold.dart';
-import '../word_guess/game_mode_picker_page.dart';
+import '../menu/game_mode_picker_page.dart';
 import '../word_guess/hooks/use_audio_player.dart';
 import 'reverse_guess_notifier.dart';
 import 'word_option_card.dart';

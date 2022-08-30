@@ -1,5 +1,4 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,10 +8,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/model/word_model.dart';
 import '../../injectable/injectable.dart';
 import '../common/use_init_hook.dart';
-import '../common/widgets/english_caption_widget.dart';
 import '../common/widgets/loading_scaffold.dart';
-import '../common/widgets/wordaroo_confetti.dart';
-import 'game_mode_picker_page.dart';
+import '../common/widgets/word_card_widget.dart';
+import '../menu/game_mode_picker_page.dart';
 import 'hooks/use_audio_player.dart';
 import 'hooks/use_char_input_controller.dart';
 import 'hooks/use_confetti_controller.dart';
@@ -20,7 +18,6 @@ import 'notifiers/game_mode_provider.dart';
 import 'notifiers/guess_count_provider.dart';
 import 'notifiers/word_guess_request_notifier.dart';
 import 'notifiers/word_guess_word_notifier.dart';
-import 'widgets/char_input_widget.dart';
 
 const gameLanguage = 'hu-HU';
 
@@ -38,9 +35,10 @@ class WordGuessPage extends HookConsumerWidget {
 
     final isWordValid = useState<bool>(false);
 
-    final controller = useCharInputController(expectedWord: word.nativeWord);
+    final inputController =
+        useCharInputController(expectedWord: word.nativeWord);
     ref.listen<WordModel?>(wordGuessWordProvider, (_, next) {
-      if (next != null) controller.updateExpectedWord(next.nativeWord);
+      if (next != null) inputController.updateExpectedWord(next.nativeWord);
     });
 
     final textToSpeech = useState(getIt<FlutterTts>()).value;
@@ -67,7 +65,7 @@ class WordGuessPage extends HookConsumerWidget {
     final submitButton = ElevatedButton.icon(
       icon: const Icon(Icons.login),
       onPressed: () {
-        isWordValid.value = controller.validateWord();
+        isWordValid.value = inputController.validateWord();
         if (isWordValid.value) {
           ref.read(wordGuessRequestProvider).addGuessedWord(word);
           audioPlayer.play(AssetSource('sounds/reward_sound.wav'));
@@ -133,44 +131,6 @@ class WordGuessPage extends HookConsumerWidget {
       ],
     );
 
-    final wordCard = Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 120,
-            right: MediaQuery.of(context).size.width / 2,
-            child: WordarooConfetti(controller: confettiController),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              children: [
-                const SizedBox(height: 8),
-                CachedNetworkImage(
-                  imageUrl: word.imageUrl,
-                  fit: BoxFit.contain,
-                  height: 180,
-                  width: 180,
-                ),
-                const SizedBox(height: 8),
-                EnglishCaptionWidget(word: word),
-                const SizedBox(height: 24),
-                CharInputWidget(
-                  controller: controller,
-                  focusNode: focusNode,
-                ),
-                const SizedBox(height: 16),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
@@ -214,7 +174,14 @@ class WordGuessPage extends HookConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: GestureDetector(
                     onTap: () => focusNode.requestFocus(),
-                    child: wordCard,
+                    child: IntrinsicHeight(
+                      child: WordCardWidget(
+                        word: word,
+                        confettiController: confettiController,
+                        charInputController: inputController,
+                        focusNode: focusNode,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),

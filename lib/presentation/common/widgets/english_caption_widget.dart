@@ -23,9 +23,11 @@ class EnglishCaptionWidget extends StatelessWidget {
           horizontal: 8,
           vertical: 4,
         ),
-        child: Text(
-          word.englishWord.toUpperCase(),
-          style: textTheme.caption,
+        child: FittedBox(
+          child: Text(
+            word.englishWord.toUpperCase(),
+            style: textTheme.caption,
+          ),
         ),
       ),
     );

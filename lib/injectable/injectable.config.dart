@@ -21,7 +21,7 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
   final gh = _i2.GetItHelper(get, environment, environmentFilter);
   final appModule = _$AppModule();
   gh.lazySingleton<_i3.AuthRepository>(() => _i3.FirAuthRepository());
-  gh.factory<_i4.FlutterTts>(() => appModule.textToSpeech);
+  gh.lazySingleton<_i4.FlutterTts>(() => appModule.textToSpeech);
   gh.lazySingleton<_i5.ProfileRepository>(() => _i5.FirProfileRepository());
   gh.lazySingleton<_i6.WordRepository>(() => _i6.FirWordRepository());
   return get;
