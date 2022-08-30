@@ -13,7 +13,9 @@ class GameModePickerPage extends HookConsumerWidget {
   const GameModePickerPage({super.key});
 
   static MaterialPageRoute<dynamic> route() {
-    return MaterialPageRoute<dynamic>(builder: (_) => const GameModePickerPage());
+    return MaterialPageRoute<dynamic>(
+      builder: (_) => const GameModePickerPage(),
+    );
   }
 
   @override
@@ -68,6 +70,11 @@ class GameModePickerPage extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        Icon(
+                          Icons.language,
+                          color: colorScheme.onPrimary,
+                          size: 32,
+                        ),
                         Text(
                           'Discover',
                           style: textTheme.headline1
@@ -120,6 +127,11 @@ class GameModePickerPage extends HookConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            Icon(
+                              Icons.replay,
+                              color: colorScheme.onPrimary,
+                              size: 32,
+                            ),
                             Text(
                               'Practice',
                               style: textTheme.headline1
@@ -176,6 +188,11 @@ class GameModePickerPage extends HookConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            Icon(
+                              Icons.photo_library,
+                              color: colorScheme.onPrimary,
+                              size: 32,
+                            ),
                             Text(
                               'Reverse',
                               style: textTheme.headline1
@@ -183,7 +200,7 @@ class GameModePickerPage extends HookConsumerWidget {
                             ),
                             Text(
                               practiceEnabled
-                                  ? 'Guess the image for each word'
+                                  ? 'Pick the correct image for each word'
                                   : 'Discover at least $_reverseUnlock words to unlock',
                               style: TextStyle(color: colorScheme.onPrimary),
                             )

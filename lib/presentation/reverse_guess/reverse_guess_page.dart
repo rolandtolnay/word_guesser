@@ -74,6 +74,7 @@ class ReverseGuessPage extends HookConsumerWidget {
                 audioPlayer.play(AssetSource('sounds/reward_sound.wav'));
                 HapticFeedback.vibrate();
               } else {
+                audioPlayer.play(AssetSource('sounds/incorrect_sound.wav'));
                 HapticFeedback.heavyImpact();
               }
 
@@ -84,7 +85,7 @@ class ReverseGuessPage extends HookConsumerWidget {
                   ignoreTaps.value = false;
                   ref
                       .read(reverseGuessProvider.notifier)
-                      .generateReverseModel();
+                      .generateReverseModel(previous: model.correctWord);
                 },
               );
             },

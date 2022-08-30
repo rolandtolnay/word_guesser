@@ -18,9 +18,14 @@ class ReverseGuessNotifier extends StateNotifier<ReverseGuessModel?> {
 
   ReverseGuessNotifier(this._ref) : super(null);
 
-  void generateReverseModel() {
-    final correctWord = _ref(randomWordProvider).makeRandomGuessedWord();
-    if (correctWord == null) return;
+  void generateReverseModel({WordModel? previous}) {
+    final randomWord = _ref(randomWordProvider).makeRandomGuessedWord();
+    if (randomWord == null) return;
+
+    var correctWord = randomWord;
+    while (correctWord.englishWord == previous?.englishWord) {
+      correctWord = _ref(randomWordProvider).makeRandomGuessedWord()!;
+    }
 
     final optionList = <WordModel>[];
     while (optionList.length < _optionCount) {
