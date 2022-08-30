@@ -24,20 +24,15 @@ class WordOptionCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final confettiController = useConfettiController();
-
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    final isIncorrect = useState<bool>(false);
-    final isCorrect = useState<bool>(false);
+    final state = useState<_CardState>(_CardState.none);
 
     return InkWell(
       onTap: () {
         if (option.englishWord == correctWord.englishWord) {
           confettiController.play();
-          isCorrect.value = true;
+          state.value = _CardState.correct;
         } else {
-          isIncorrect.value = true;
+          state.value = _CardState.incorrect;
         }
         onTapped.call(option.englishWord == correctWord.englishWord);
       },
@@ -45,11 +40,7 @@ class WordOptionCard extends HookConsumerWidget {
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: isIncorrect.value
-              ? BorderSide(width: 3, color: colorScheme.error)
-              : isCorrect.value
-                  ? BorderSide(width: 3, color: Color(0xff05c46b))
-                  : BorderSide.none,
+          side: state.value.buildBorderSide(context),
         ),
         child: Center(
           child: Stack(
@@ -78,5 +69,24 @@ class WordOptionCard extends HookConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+enum _CardState {
+  none,
+  correct,
+  incorrect;
+
+  BorderSide buildBorderSide(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    switch (this) {
+      case _CardState.none:
+        return BorderSide.none;
+      case _CardState.correct:
+        return BorderSide(width: 3, color: Color(0xff05c46b));
+      case _CardState.incorrect:
+        return BorderSide(width: 3, color: colorScheme.error);
+    }
   }
 }

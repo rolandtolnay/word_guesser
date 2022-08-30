@@ -7,6 +7,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../domain/model/word_model.dart';
+import '../../injectable/injectable.dart';
 import '../common/use_init_hook.dart';
 import '../common/widgets/english_caption_widget.dart';
 import '../common/widgets/loading_scaffold.dart';
@@ -42,7 +43,7 @@ class WordGuessPage extends HookConsumerWidget {
       if (next != null) controller.updateExpectedWord(next.nativeWord);
     });
 
-    final textToSpeech = useState(FlutterTtsFactory.make()).value;
+    final textToSpeech = useState(getIt<FlutterTts>()).value;
     final focusNode = useFocusNode();
     final confettiController = useConfettiController();
     final audioPlayer = useAudioPlayer();
@@ -238,22 +239,4 @@ class WordGuessPage extends HookConsumerWidget {
 
 extension on WordModel {
   String get soundHint => nativeWord;
-}
-
-extension FlutterTtsFactory on FlutterTts {
-  static FlutterTts make() {
-    return FlutterTts()
-      ..setLanguage(gameLanguage)
-      ..setVolume(1)
-      ..setIosAudioCategory(
-        IosTextToSpeechAudioCategory.playback,
-        [
-          IosTextToSpeechAudioCategoryOptions.allowBluetooth,
-          IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
-          IosTextToSpeechAudioCategoryOptions.mixWithOthers,
-          IosTextToSpeechAudioCategoryOptions.defaultToSpeaker,
-        ],
-        IosTextToSpeechAudioMode.voicePrompt,
-      );
-  }
 }

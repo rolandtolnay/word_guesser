@@ -1,9 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../domain/model/word_model.dart';
+import '../../injectable/injectable.dart';
 import '../common/use_init_hook.dart';
 import '../common/widgets/loading_scaffold.dart';
 import '../word_guess/game_mode_picker_page.dart';
@@ -20,10 +23,16 @@ class ReverseGuessPage extends HookConsumerWidget {
       () => ref.read(reverseGuessProvider.notifier).generateReverseModel(),
     );
 
-    final model = ref.watch(reverseGuessProvider);
-    if (model == null) return LoadingScaffold();
-
     final audioPlayer = useAudioPlayer();
+    final textToSpeech = useState(getIt<FlutterTts>()).value;
+
+    final model = ref.watch(reverseGuessProvider);
+    useEffect(
+      () => _speakCorrectWord(model, textToSpeech),
+      [model?.correctWord.englishWord],
+    );
+
+    if (model == null) return LoadingScaffold();
 
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -41,9 +50,7 @@ class ReverseGuessPage extends HookConsumerWidget {
               color: colorScheme.primary,
             ),
             onPressed: () {
-              Navigator.of(context).push(
-                GameModePickerPage.route(),
-              );
+              Navigator.of(context).push(GameModePickerPage.route());
             },
           ),
           SizedBox(width: 8),
@@ -55,8 +62,9 @@ class ReverseGuessPage extends HookConsumerWidget {
       crossAxisCount: 2,
       children: model.allOptions.map(
         (option) {
+          final key = '${model.correctWord.englishWord}${option.englishWord}';
           return WordOptionCard(
-            key: UniqueKey(),
+            key: ValueKey(key),
             option: option,
             correctWord: model.correctWord,
             onTapped: (isCorrect) {
@@ -99,5 +107,15 @@ class ReverseGuessPage extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  Dispose? _speakCorrectWord(
+    ReverseGuessModel? model,
+    FlutterTts textToSpeech,
+  ) {
+    final word = model?.correctWord.nativeWord;
+    if (word == null) return null;
+    Future.delayed(Duration(seconds: 1), () => textToSpeech.speak(word));
+    return null;
   }
 }
