@@ -1,25 +1,25 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:word_guesser/presentation/word_guess/game_mode_picker_page.dart';
-import 'package:word_guesser/presentation/word_guess/notifiers/guess_count_provider.dart';
 
 import '../../domain/model/word_model.dart';
 import '../common/use_init_hook.dart';
+import '../common/widgets/english_caption_widget.dart';
 import '../common/widgets/loading_scaffold.dart';
+import '../common/widgets/wordaroo_confetti.dart';
+import 'game_mode_picker_page.dart';
 import 'hooks/use_audio_player.dart';
 import 'hooks/use_char_input_controller.dart';
 import 'hooks/use_confetti_controller.dart';
-import 'notifiers/word_guess_word_notifier.dart';
 import 'notifiers/game_mode_provider.dart';
+import 'notifiers/guess_count_provider.dart';
 import 'notifiers/word_guess_notifier.dart';
+import 'notifiers/word_guess_word_notifier.dart';
 import 'widgets/char_input_widget.dart';
-import 'widgets/text_hint_button.dart';
 
 const gameLanguage = 'hu-HU';
 
@@ -35,7 +35,6 @@ class WordGuessPage extends HookConsumerWidget {
     final word = ref.watch(wordGuessWordProvider);
     if (word == null) return LoadingScaffold();
 
-    final didTextHint = useState<bool>(false);
     final isWordValid = useState<bool>(false);
 
     final controller = useCharInputController(expectedWord: word.nativeWord);
@@ -54,49 +53,17 @@ class WordGuessPage extends HookConsumerWidget {
 
     final hintRow = Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Spacer(),
-        TextHintButton(
-          hint: word.textHint,
-          used: didTextHint.value,
-          onTapped: () async {
-            final confirm = await showDialog<bool>(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text(
-                    "There are no limits to how many hints you can use, but don't get used to it ;)",
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('CANCEL'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: Text('SHOW HINT'),
-                    ),
-                  ],
-                );
-              },
-            );
-            if (confirm != null && confirm) {
-              didTextHint.value = true;
-            }
-          },
-        ),
-        const Spacer(),
         TextButton.icon(
           onPressed: () => textToSpeech.speak(word.soundHint),
           icon: Icon(Icons.volume_up),
           label: Text('HUNGARIAN'),
         ),
-        const Spacer(),
       ],
     );
 
-    final checkButton = ElevatedButton.icon(
+    final submitButton = ElevatedButton.icon(
       icon: Icon(Icons.login),
       onPressed: () {
         isWordValid.value = controller.validateWord();
@@ -105,7 +72,6 @@ class WordGuessPage extends HookConsumerWidget {
           audioPlayer.play(AssetSource('sounds/reward_sound.wav'));
           confettiController.play();
           HapticFeedback.vibrate();
-          didTextHint.value = true;
         } else {
           HapticFeedback.heavyImpact();
         }
@@ -127,7 +93,6 @@ class WordGuessPage extends HookConsumerWidget {
       icon: Icon(Icons.fast_forward),
       onPressed: () {
         ref.read(wordGuessWordProvider.notifier).generateRandomWord();
-        didTextHint.value = false;
         isWordValid.value = false;
       },
       label: Text('GUESS ANOTHER'),
@@ -167,6 +132,44 @@ class WordGuessPage extends HookConsumerWidget {
       ],
     );
 
+    final wordCard = Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 120,
+            right: MediaQuery.of(context).size.width / 2,
+            child: WordarooConfetti(controller: confettiController),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                CachedNetworkImage(
+                  imageUrl: word.imageUrl,
+                  fit: BoxFit.contain,
+                  height: 180,
+                  width: 180,
+                ),
+                const SizedBox(height: 8),
+                EnglishCaptionWidget(word: word),
+                const SizedBox(height: 24),
+                CharInputWidget(
+                  controller: controller,
+                  focusNode: focusNode,
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
@@ -176,7 +179,7 @@ class WordGuessPage extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(
-                  height: 64,
+                  height: 56,
                   child: Row(
                     children: [
                       Align(
@@ -210,62 +213,10 @@ class WordGuessPage extends HookConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: GestureDetector(
                     onTap: () => focusNode.requestFocus(),
-                    child: Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            top: 120,
-                            right: MediaQuery.of(context).size.width / 2,
-                            child: ConfettiWidget(
-                              emissionFrequency: 1,
-                              numberOfParticles: 4,
-                              minimumSize: const Size(4, 4),
-                              maximumSize: const Size(12, 12),
-                              confettiController: confettiController,
-                              blastDirectionality:
-                                  BlastDirectionality.explosive,
-                              colors: const <Color>[
-                                Colors.greenAccent,
-                                Colors.blue,
-                                Colors.pink,
-                                Colors.deepOrange,
-                                Colors.deepPurpleAccent,
-                                Colors.purpleAccent,
-                                Colors.yellow,
-                                Colors.lightBlueAccent,
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 24),
-                                CachedNetworkImage(
-                                  imageUrl: word.imageUrl,
-                                  fit: BoxFit.contain,
-                                  height: 180,
-                                  width: 180,
-                                ),
-                                const SizedBox(height: 24),
-                                CharInputWidget(
-                                  controller: controller,
-                                  focusNode: focusNode,
-                                ),
-                                const SizedBox(height: 16),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: wordCard,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 SizedBox(height: 40, child: hintRow),
                 const SizedBox(height: 8),
                 Padding(
@@ -273,7 +224,7 @@ class WordGuessPage extends HookConsumerWidget {
                   child: Visibility(
                     visible: !isWordValid.value,
                     replacement: nextWordButton,
-                    child: checkButton,
+                    child: submitButton,
                   ),
                 ),
               ],
@@ -286,8 +237,6 @@ class WordGuessPage extends HookConsumerWidget {
 }
 
 extension on WordModel {
-  String get textHint => englishWord;
-
   String get soundHint => nativeWord;
 }
 

@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:riverpod/riverpod.dart';
-import 'package:word_guesser/presentation/common/random_word_provider.dart';
 
 import '../../domain/model/word_model.dart';
+import '../common/random_word_provider.dart';
 
 final reverseGuessProvider =
     StateNotifierProvider<ReverseGuessNotifier, ReverseGuessModel?>(

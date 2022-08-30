@@ -1,7 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:word_guesser/presentation/word_guess/notifiers/game_mode_provider.dart';
 
 import '../../auth/user_notifier.dart';
+import 'game_mode_provider.dart';
 
 // TODO(Roland): Clean this up
 final guessCountProvider = Provider<int?>((ref) {
