@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -5,8 +6,8 @@ import '../auth/user_notifier.dart';
 import 'notifiers/game_mode_provider.dart';
 import 'widgets/word_fetcher_widget.dart';
 
-const _practiceUnlock = 25;
-const _reverseUnlock = 50;
+const _practiceUnlock = kDebugMode ? 0 : 25;
+const _reverseUnlock = kDebugMode ? 0 : 50;
 
 class GameModePickerPage extends HookConsumerWidget {
   const GameModePickerPage({super.key});

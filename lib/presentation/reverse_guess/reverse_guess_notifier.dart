@@ -1,10 +1,9 @@
 import 'dart:math';
 
 import 'package:riverpod/riverpod.dart';
+import 'package:word_guesser/presentation/common/random_word_provider.dart';
 
 import '../../domain/model/word_model.dart';
-import '../auth/user_notifier.dart';
-import '../word_guess/notifiers/word_list_notifier.dart';
 
 final reverseGuessProvider =
     StateNotifierProvider<ReverseGuessNotifier, ReverseGuessModel?>(
@@ -20,12 +19,12 @@ class ReverseGuessNotifier extends StateNotifier<ReverseGuessModel?> {
   ReverseGuessNotifier(this._ref) : super(null);
 
   void generateReverseModel() {
-    final correctWord = _makeRandomWord();
+    final correctWord = _ref(randomWordProvider).makeRandomGuessedWord();
     if (correctWord == null) return;
 
     final optionList = <WordModel>[];
     while (optionList.length < _optionCount) {
-      final option = _makeRandomWord();
+      final option = _ref(randomWordProvider).makeRandomGuessedWord();
       if (option == null) return;
       if (!optionList.map((e) => e.englishWord).contains(option.englishWord) &&
           option.englishWord != correctWord.englishWord) {
@@ -33,26 +32,6 @@ class ReverseGuessNotifier extends StateNotifier<ReverseGuessModel?> {
       }
     }
     state = ReverseGuessModel(correctWord: correctWord, options: optionList);
-  }
-
-  // TODO(Roland): Extract this into reusable function
-  WordModel? _makeRandomWord() {
-    final wordList = _ref(wordListProvider).state.maybeWhen(
-          success: (wordList) => wordList,
-          orElse: () => <WordModel>[],
-        );
-    final guessedWords = _ref(userProvider)?.guessedWords ?? [];
-    Iterable<WordModel> filtered = wordList;
-    filtered = filtered.where(
-      (e) => guessedWords.contains(e.englishWord),
-    );
-
-    if (filtered.isEmpty) filtered = wordList;
-    // TODO(Roland): Remove length filter after long words supported in UI
-    filtered = filtered.where((e) => e.nativeWord.length < 9);
-    if (filtered.isEmpty) return null;
-
-    return filtered.toList()[random.nextInt(filtered.length)];
   }
 }
 

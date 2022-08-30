@@ -15,7 +15,7 @@ import '../common/widgets/loading_scaffold.dart';
 import 'hooks/use_audio_player.dart';
 import 'hooks/use_char_input_controller.dart';
 import 'hooks/use_confetti_controller.dart';
-import 'notifiers/current_word_notifier.dart';
+import 'notifiers/word_guess_word_notifier.dart';
 import 'notifiers/game_mode_provider.dart';
 import 'notifiers/word_guess_notifier.dart';
 import 'widgets/char_input_widget.dart';
@@ -29,17 +29,17 @@ class WordGuessPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useInitAsync(
-      () => ref.read(currentWordProvider.notifier).generateRandomWord(),
+      () => ref.read(wordGuessWordProvider.notifier).generateRandomWord(),
     );
 
-    final word = ref.watch(currentWordProvider);
+    final word = ref.watch(wordGuessWordProvider);
     if (word == null) return LoadingScaffold();
 
     final didTextHint = useState<bool>(false);
     final isWordValid = useState<bool>(false);
 
     final controller = useCharInputController(expectedWord: word.nativeWord);
-    ref.listen<WordModel?>(currentWordProvider, (_, next) {
+    ref.listen<WordModel?>(wordGuessWordProvider, (_, next) {
       if (next != null) controller.updateExpectedWord(next.nativeWord);
     });
 
@@ -126,7 +126,7 @@ class WordGuessPage extends HookConsumerWidget {
     final nextWordButton = ElevatedButton.icon(
       icon: Icon(Icons.fast_forward),
       onPressed: () {
-        ref.read(currentWordProvider.notifier).generateRandomWord();
+        ref.read(wordGuessWordProvider.notifier).generateRandomWord();
         didTextHint.value = false;
         isWordValid.value = false;
       },
