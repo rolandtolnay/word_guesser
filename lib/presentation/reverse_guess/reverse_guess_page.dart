@@ -49,44 +49,68 @@ class ReverseGuessPage extends HookConsumerWidget {
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
-    final score = '${sessionCorrectCount.value} / ${sessionWordCount.value}';
+    final scorePercent = sessionWordCount.value > 0
+        ? '${(sessionCorrectCount.value / sessionWordCount.value * 100).toInt()}%'
+        : '';
+    final scoreCount = 'out of ${sessionWordCount.value}';
     final menuRow = SizedBox(
       height: 64,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'SESSION SCORE:',
-                style: textTheme.caption?.copyWith(color: colorScheme.tertiary),
-              ),
-              AnimatedSwitcher(
-                switchInCurve: Curves.easeInExpo,
-                switchOutCurve: Curves.easeOutExpo,
-                duration: Duration(milliseconds: 300),
-                transitionBuilder: (child, animation) {
-                  return FadeTransition(
-                    opacity: Tween<double>(begin: 0, end: 1).animate(animation),
-                    child: child,
-                  );
-                },
-                child: SizedBox(
-                  key: ValueKey<String>(score),
-                  width: 160,
-                  child: Text(
-                    score,
-                    style: textTheme.headline6?.copyWith(
-                      color: colorScheme.tertiary,
-                      fontWeight: FontWeight.bold,
+          Visibility(
+            visible: sessionWordCount.value > 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'SESSION SCORE:',
+                  style:
+                      textTheme.caption?.copyWith(color: colorScheme.tertiary),
+                ),
+                AnimatedSwitcher(
+                  switchInCurve: Curves.easeInExpo,
+                  switchOutCurve: Curves.easeOutExpo,
+                  duration: Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) {
+                    return FadeTransition(
+                      opacity:
+                          Tween<double>(begin: 0, end: 1).animate(animation),
+                      child: child,
+                    );
+                  },
+                  child: SizedBox(
+                    key: ValueKey<String>(scorePercent),
+                    width: 240,
+                    height: 32,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          scorePercent,
+                          style: textTheme.headline6?.copyWith(
+                            color: colorScheme.tertiary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Align(
+                          alignment: Alignment(0, 0.25),
+                          child: Text(
+                            scoreCount,
+                            style: textTheme.caption?.copyWith(
+                              color: colorScheme.tertiary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
           Spacer(),
           IconButton(
