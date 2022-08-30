@@ -13,7 +13,7 @@ class GameModePickerPage extends HookConsumerWidget {
   const GameModePickerPage({super.key});
 
   static MaterialPageRoute<dynamic> route() {
-    return MaterialPageRoute<dynamic>(builder: (_) => GameModePickerPage());
+    return MaterialPageRoute<dynamic>(builder: (_) => const GameModePickerPage());
   }
 
   @override
@@ -58,7 +58,7 @@ class GameModePickerPage extends HookConsumerWidget {
                   },
                   child: Container(
                     height: 160,
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       border: Border.all(width: 2),
                       borderRadius: BorderRadius.circular(16),
@@ -95,7 +95,7 @@ class GameModePickerPage extends HookConsumerWidget {
                       : null,
                   child: Container(
                     height: 160,
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       border: Border.all(width: 2),
                       borderRadius: BorderRadius.circular(16),
@@ -107,14 +107,14 @@ class GameModePickerPage extends HookConsumerWidget {
                       children: [
                         if (!practiceEnabled) ...[
                           Align(
-                            alignment: Alignment(0, 0.25),
+                            alignment: const Alignment(0, 0.25),
                             child: Icon(
                               Icons.lock,
                               color: colorScheme.onPrimary,
                               size: 36,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                         ],
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +151,7 @@ class GameModePickerPage extends HookConsumerWidget {
                       : null,
                   child: Container(
                     height: 160,
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       border: Border.all(width: 2),
                       borderRadius: BorderRadius.circular(16),
@@ -163,14 +163,14 @@ class GameModePickerPage extends HookConsumerWidget {
                       children: [
                         if (!reverseEnabled) ...[
                           Align(
-                            alignment: Alignment(0, 0.25),
+                            alignment: const Alignment(0, 0.25),
                             child: Icon(
                               Icons.lock,
                               color: colorScheme.onPrimary,
                               size: 36,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                         ],
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

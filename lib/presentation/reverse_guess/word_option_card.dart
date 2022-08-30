@@ -84,7 +84,7 @@ enum _CardState {
       case _CardState.none:
         return BorderSide.none;
       case _CardState.correct:
-        return BorderSide(width: 3, color: Color(0xff05c46b));
+        return const BorderSide(width: 3, color: Color(0xff05c46b));
       case _CardState.incorrect:
         return BorderSide(width: 3, color: colorScheme.error);
     }

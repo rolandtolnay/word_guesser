@@ -34,7 +34,7 @@ class WordGuessPage extends HookConsumerWidget {
     );
 
     final word = ref.watch(wordGuessWordProvider);
-    if (word == null) return LoadingScaffold();
+    if (word == null) return const LoadingScaffold();
 
     final isWordValid = useState<bool>(false);
 
@@ -58,14 +58,14 @@ class WordGuessPage extends HookConsumerWidget {
       children: [
         TextButton.icon(
           onPressed: () => textToSpeech.speak(word.soundHint),
-          icon: Icon(Icons.volume_up),
-          label: Text('HUNGARIAN'),
+          icon: const Icon(Icons.volume_up),
+          label: const Text('HUNGARIAN'),
         ),
       ],
     );
 
     final submitButton = ElevatedButton.icon(
-      icon: Icon(Icons.login),
+      icon: const Icon(Icons.login),
       onPressed: () {
         isWordValid.value = controller.validateWord();
         if (isWordValid.value) {
@@ -77,10 +77,10 @@ class WordGuessPage extends HookConsumerWidget {
           HapticFeedback.heavyImpact();
         }
       },
-      label: Text('SUBMIT'),
+      label: const Text('SUBMIT'),
       style: ButtonStyle(
         fixedSize: MaterialStateProperty.resolveWith(
-          (_) => Size.fromHeight(44),
+          (_) => const Size.fromHeight(44),
         ),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
@@ -91,15 +91,15 @@ class WordGuessPage extends HookConsumerWidget {
     );
 
     final nextWordButton = ElevatedButton.icon(
-      icon: Icon(Icons.fast_forward),
+      icon: const Icon(Icons.fast_forward),
       onPressed: () {
         ref.read(wordGuessWordProvider.notifier).generateRandomWord();
         isWordValid.value = false;
       },
-      label: Text('GUESS ANOTHER'),
+      label: const Text('GUESS ANOTHER'),
       style: ButtonStyle(
         fixedSize: MaterialStateProperty.resolveWith(
-          (_) => Size.fromHeight(44),
+          (_) => const Size.fromHeight(44),
         ),
       ),
     );
@@ -109,7 +109,7 @@ class WordGuessPage extends HookConsumerWidget {
     final guessCount = Row(
       children: [
         Align(
-          alignment: Alignment(0, 0.7),
+          alignment: const Alignment(0, 0.7),
           child: Text(
             mode.guessedDescription,
             style: textTheme.subtitle1?.copyWith(
@@ -118,9 +118,9 @@ class WordGuessPage extends HookConsumerWidget {
           ),
         ),
         if (count != null) ...[
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Align(
-            alignment: Alignment(0, 0.8),
+            alignment: const Alignment(0, 0.8),
             child: Text(
               '$count',
               style: textTheme.headline4?.copyWith(
@@ -190,7 +190,7 @@ class WordGuessPage extends HookConsumerWidget {
                           child: guessCount,
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Align(
                         alignment: Alignment.topRight,
                         child: IconButton(
@@ -206,7 +206,7 @@ class WordGuessPage extends HookConsumerWidget {
                           },
                         ),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                     ],
                   ),
                 ),

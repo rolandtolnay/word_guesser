@@ -17,7 +17,7 @@ class CommonDialog extends StatelessWidget {
         ),
         clipBehavior: Clip.hardEdge,
         elevation: 4,
-        insetPadding: EdgeInsets.symmetric(
+        insetPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 24,
         ),

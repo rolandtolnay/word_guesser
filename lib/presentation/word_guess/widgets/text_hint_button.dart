@@ -19,13 +19,13 @@ class TextHintButton extends StatelessWidget {
     final hintColor = colorScheme.tertiary;
     return TextButton.icon(
       onPressed: used ? null : onTapped,
-      icon: used ? SizedBox.shrink() : Icon(Icons.edit),
+      icon: used ? const SizedBox.shrink() : const Icon(Icons.edit),
       label: used
           ? Text(
               hint.toUpperCase(),
               style: TextStyle(color: hintColor),
             )
-          : Text('ENGLISH'),
+          : const Text('ENGLISH'),
       style: ButtonStyle(
         padding: MaterialStateProperty.resolveWith(
           (states) => states.isDisabled

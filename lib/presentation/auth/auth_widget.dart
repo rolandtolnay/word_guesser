@@ -15,10 +15,10 @@ class AuthWidget extends HookConsumerWidget {
     useInitAsync(() => ref.read(userProvider.notifier).signInAnonymously());
 
     final user = ref.watch(userProvider);
-    if (user == null) return LoadingScaffold();
+    if (user == null) return const LoadingScaffold();
 
     return (user.displayName?.isEmpty ?? true)
-        ? NameInputPage()
-        : GameModePickerPage();
+        ? const NameInputPage()
+        : const GameModePickerPage();
   }
 }

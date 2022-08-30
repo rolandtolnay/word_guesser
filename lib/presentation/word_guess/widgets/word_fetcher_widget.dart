@@ -12,7 +12,7 @@ class WordFetcherWidget extends HookConsumerWidget {
   const WordFetcherWidget({super.key});
 
   static MaterialPageRoute<dynamic> route() {
-    return MaterialPageRoute<dynamic>(builder: (_) => WordFetcherWidget());
+    return MaterialPageRoute<dynamic>(builder: (_) => const WordFetcherWidget());
   }
 
   @override
@@ -26,12 +26,12 @@ class WordFetcherWidget extends HookConsumerWidget {
         switch (mode) {
           case GameMode.discover:
           case GameMode.practice:
-            return WordGuessPage();
+            return const WordGuessPage();
           case GameMode.reverse:
-            return ReverseGuessPage();
+            return const ReverseGuessPage();
         }
       },
-      orElse: () => LoadingScaffold(),
+      orElse: () => const LoadingScaffold(),
     );
   }
 }

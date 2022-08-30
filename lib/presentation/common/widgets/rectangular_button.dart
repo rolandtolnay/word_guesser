@@ -21,7 +21,7 @@ class RectangularButton extends StatelessWidget {
       onPressed: enabled ? onPressed : null,
       style: ButtonStyle(
         fixedSize: MaterialStateProperty.resolveWith(
-          (_) => Size.fromHeight(48),
+          (_) => const Size.fromHeight(48),
         ),
       ),
       child: Text(

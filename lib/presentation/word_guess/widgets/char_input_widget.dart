@@ -37,7 +37,7 @@ class _CharInputWidgetState extends State<CharInputWidget> {
       focusNode: _focusNode,
       controller: widget.controller,
       cursorWidth: 0.01,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         contentPadding: EdgeInsets.zero,
         border: InputBorder.none,
         enabledBorder: InputBorder.none,
@@ -45,7 +45,7 @@ class _CharInputWidgetState extends State<CharInputWidget> {
         disabledBorder: InputBorder.none,
         fillColor: Colors.transparent,
       ),
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.transparent,
         height: .01,
         fontSize: 0.01,
@@ -74,14 +74,14 @@ class _CharInputWidgetState extends State<CharInputWidget> {
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: i <= input.length
-                          ? Color(0xff1e272e)
-                          : Color(0xff8f9397),
+                          ? const Color(0xff1e272e)
+                          : const Color(0xff8f9397),
                       width: i == input.length ? 2 : 1,
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
                     color: i <= input.length
                         ? widget.controller.charSimilarityList[i].color
-                        : Color(0xffe9edf1),
+                        : const Color(0xffe9edf1),
                   ),
                   child: Center(
                     child: Text(

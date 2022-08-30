@@ -78,11 +78,11 @@ enum CharSimilarity {
   Color? get color {
     switch (this) {
       case CharSimilarity.none:
-        return Color(0xffd2dae2);
+        return const Color(0xffd2dae2);
       case CharSimilarity.similar:
-        return Color(0xffffc048);
+        return const Color(0xffffc048);
       case CharSimilarity.exactMatch:
-        return Color(0xff05c46b);
+        return const Color(0xff05c46b);
     }
   }
 }

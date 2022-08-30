@@ -32,7 +32,7 @@ class ReverseGuessPage extends HookConsumerWidget {
       [model?.correctWord.englishWord],
     );
 
-    if (model == null) return LoadingScaffold();
+    if (model == null) return const LoadingScaffold();
 
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -53,7 +53,7 @@ class ReverseGuessPage extends HookConsumerWidget {
               Navigator.of(context).push(GameModePickerPage.route());
             },
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
       ),
     );
@@ -115,7 +115,7 @@ class ReverseGuessPage extends HookConsumerWidget {
   ) {
     final word = model?.correctWord.nativeWord;
     if (word == null) return null;
-    Future.delayed(Duration(seconds: 1), () => textToSpeech.speak(word));
+    Future.delayed(const Duration(seconds: 1), () => textToSpeech.speak(word));
     return null;
   }
 }

@@ -14,7 +14,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await configureDependencies();
 
-  runApp(ProviderScope(child: const Application()));
+  runApp(const ProviderScope(child: Application()));
 }
 
 class Application extends StatelessWidget {
@@ -49,7 +49,7 @@ class Application extends StatelessWidget {
         fontFamily: GoogleFonts.cabin().fontFamily,
       ),
       themeMode: ThemeMode.light,
-      home: AuthWidget(),
+      home: const AuthWidget(),
     );
   }
 }

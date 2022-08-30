@@ -33,7 +33,7 @@ class NameInputPage extends HookConsumerWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                Image(image: AssetImage('assets/images/logo_slim.png')),
+                const Image(image: AssetImage('assets/images/logo_slim.png')),
                 const SizedBox(height: 24),
                 Text(
                   'Learn a new language. \nOne image at a time.',
@@ -45,14 +45,14 @@ class NameInputPage extends HookConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Spacer(),
+                      const Spacer(),
                       Text('Whats your name?', style: textTheme.headline4),
                       const SizedBox(height: 8),
                       TextField(
                         controller: nameController,
                         style: textTheme.subtitle1,
                         decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 16,
                           ),
@@ -75,7 +75,7 @@ class NameInputPage extends HookConsumerWidget {
                           );
                         },
                       ),
-                      Spacer(flex: 3)
+                      const Spacer(flex: 3)
                     ],
                   ),
                 ),

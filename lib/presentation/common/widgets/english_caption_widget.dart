@@ -16,7 +16,7 @@ class EnglishCaptionWidget extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: colorScheme.tertiary),
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
