@@ -8,7 +8,7 @@ linter:
     one_member_abstracts: false
     unnecessary_lambdas: false
     lines_longer_than_80_chars: false
-    prefer_const_constructors: true
+    prefer_const_constructors: false
 
 analyzer:
   exclude:

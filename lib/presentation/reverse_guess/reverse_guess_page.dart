@@ -25,6 +25,7 @@ class ReverseGuessPage extends HookConsumerWidget {
 
     final audioPlayer = useAudioPlayer();
     final textToSpeech = useState(getIt<FlutterTts>()).value;
+    final ignoreTaps = useState<bool>(false);
 
     final model = ref.watch(reverseGuessProvider);
     useEffect(
@@ -60,6 +61,7 @@ class ReverseGuessPage extends HookConsumerWidget {
     final optionGrid = GridView.count(
       childAspectRatio: 0.8,
       crossAxisCount: 2,
+      physics: NeverScrollableScrollPhysics(),
       children: model.allOptions.map(
         (option) {
           final key = '${model.correctWord.englishWord}${option.englishWord}';
@@ -75,9 +77,11 @@ class ReverseGuessPage extends HookConsumerWidget {
                 HapticFeedback.heavyImpact();
               }
 
+              ignoreTaps.value = true;
               Future.delayed(
                 Duration(seconds: isCorrect ? 2 : 1),
                 () {
+                  ignoreTaps.value = false;
                   ref
                       .read(reverseGuessProvider.notifier)
                       .generateReverseModel();
@@ -101,7 +105,12 @@ class ReverseGuessPage extends HookConsumerWidget {
                 style: textTheme.headline2,
               ),
               const SizedBox(height: 24),
-              Expanded(child: optionGrid)
+              Expanded(
+                child: IgnorePointer(
+                  ignoring: ignoreTaps.value,
+                  child: optionGrid,
+                ),
+              )
             ],
           ),
         ),

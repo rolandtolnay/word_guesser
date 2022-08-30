@@ -38,9 +38,8 @@ class ReverseGuessNotifier extends StateNotifier<ReverseGuessModel?> {
 class ReverseGuessModel {
   final WordModel correctWord;
   final List<WordModel> options;
+  final Iterable<WordModel> allOptions;
 
-  ReverseGuessModel({required this.correctWord, required this.options});
-
-  Iterable<WordModel> get allOptions => options + [correctWord]
-    ..shuffle();
+  ReverseGuessModel({required this.correctWord, required this.options})
+      : allOptions = (options + [correctWord])..shuffle();
 }
