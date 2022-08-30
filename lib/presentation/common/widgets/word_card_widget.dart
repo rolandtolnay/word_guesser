@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/model/word_model.dart';
 import '../../word_guess/widgets/char_input_controller.dart';
 import '../../word_guess/widgets/char_input_widget.dart';
-import 'english_caption_widget.dart';
+import 'word_caption_widget.dart';
 import 'wordaroo_confetti.dart';
 
 class WordCardWidget extends StatelessWidget {
@@ -52,7 +52,7 @@ class WordCardWidget extends StatelessWidget {
                   width: imageSize,
                 ),
                 const SizedBox(height: 8),
-                EnglishCaptionWidget(word: word),
+                WordCaptionWidget(word: word),
                 if (charInputController != null) ...[
                   const SizedBox(height: 24),
                   CharInputWidget(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../common/use_init_hook.dart';
-import '../common/widgets/loading_scaffold.dart';
+import '../common/widgets/generic/loading_scaffold.dart';
 import '../menu/game_mode_picker_page.dart';
 import 'name_input_page.dart';
 import 'user_notifier.dart';

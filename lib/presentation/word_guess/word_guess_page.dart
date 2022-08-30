@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/model/word_model.dart';
 import '../../injectable/injectable.dart';
 import '../common/use_init_hook.dart';
-import '../common/widgets/loading_scaffold.dart';
+import '../common/widgets/generic/loading_scaffold.dart';
 import '../common/widgets/word_card_widget.dart';
 import '../menu/game_mode_picker_page.dart';
 import 'hooks/use_audio_player.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../common/widgets/rectangular_button.dart';
+import '../common/widgets/generic/rectangular_button.dart';
 import '../menu/game_mode_picker_page.dart';
 import 'user_notifier.dart';
 

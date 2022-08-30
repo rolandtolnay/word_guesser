@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/model/word_model.dart';
 
-class EnglishCaptionWidget extends StatelessWidget {
-  const EnglishCaptionWidget({super.key, required this.word});
+class WordCaptionWidget extends StatelessWidget {
+  const WordCaptionWidget({super.key, required this.word});
 
   final WordModel word;
 

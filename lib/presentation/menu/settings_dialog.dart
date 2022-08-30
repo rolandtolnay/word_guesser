@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../common/widgets/common_dialog.dart';
+import '../common/widgets/generic/common_dialog.dart';
 
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({super.key});
