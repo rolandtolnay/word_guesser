@@ -54,47 +54,50 @@ class _CharInputWidgetState extends State<CharInputWidget> {
       textCapitalization: TextCapitalization.characters,
     );
 
-    return Stack(
-      children: [
-        textField,
-        // TODO(Roland): Consider using Wrap to handle longer words
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            word.length,
-            (i) {
-              final input = widget.controller.text;
-              final letter = i < input.length ? input[i] : '';
+    return IntrinsicHeight(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          textField,
+          Wrap(
+            alignment: WrapAlignment.center,
+            runSpacing: 4,
+            children: List.generate(
+              word.length,
+              (i) {
+                final input = widget.controller.text;
+                final letter = i < input.length ? input[i] : '';
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Container(
-                  width: 40,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    border: Border.all(
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Container(
+                    width: 40,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: i <= input.length
+                            ? const Color(0xff1e272e)
+                            : const Color(0xff8f9397),
+                        width: i == input.length ? 2 : 1,
+                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
                       color: i <= input.length
-                          ? const Color(0xff1e272e)
-                          : const Color(0xff8f9397),
-                      width: i == input.length ? 2 : 1,
+                          ? widget.controller.charSimilarityList[i].color
+                          : const Color(0xffe9edf1),
                     ),
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    color: i <= input.length
-                        ? widget.controller.charSimilarityList[i].color
-                        : const Color(0xffe9edf1),
-                  ),
-                  child: Center(
-                    child: Text(
-                      letter,
-                      style: textTheme.headline6,
+                    child: Center(
+                      child: Text(
+                        letter,
+                        style: textTheme.headline6,
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

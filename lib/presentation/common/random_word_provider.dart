@@ -21,10 +21,7 @@ class RandomWordProvider {
   WordModel? makeRandomGuessedWord() => _makeRandomWord(_guessedWords);
 
   WordModel? _makeRandomWord(Iterable<WordModel> wordList) {
-    // TODO(Roland): Remove length filter after long words supported in UI
-    final filtered = wordList.where((e) => e.nativeWord.length < 9);
-    if (filtered.isEmpty) return null;
-    return filtered.toList()[_random.nextInt(filtered.length)];
+    return wordList.toList()[_random.nextInt(wordList.length)];
   }
 
   Iterable<WordModel> get _unguessedWords {
