@@ -5,7 +5,7 @@ import '../../common/random_word_provider.dart';
 import 'game_mode_provider.dart';
 
 final wordGuessWordProvider =
-    StateNotifierProvider<WordGuessWordNotifier, WordModel?>(
+    StateNotifierProvider.autoDispose<WordGuessWordNotifier, WordModel?>(
   (ref) => WordGuessWordNotifier(ref.read),
 );
 

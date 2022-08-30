@@ -7,15 +7,15 @@ import '../../../injectable/injectable.dart';
 import '../../auth/user_notifier.dart';
 import '../../common/request_notifier.dart';
 
-final wordGuessProvider = ChangeNotifierProvider(
-  (ref) => WordGuessNotifier(getIt(), ref.watch(userProvider)),
+final wordGuessRequestProvider = ChangeNotifierProvider.autoDispose(
+  (ref) => WordGuessRequestNotifier(getIt(), ref.watch(userProvider)),
 );
 
-class WordGuessNotifier extends RequestNotifier<List<String>> {
+class WordGuessRequestNotifier extends RequestNotifier<List<String>> {
   final ProfileRepository _profileRepository;
   final UserEntity? _user;
 
-  WordGuessNotifier(this._profileRepository, this._user);
+  WordGuessRequestNotifier(this._profileRepository, this._user);
 
   void addGuessedWord(WordModel word) {
     final user = _user;

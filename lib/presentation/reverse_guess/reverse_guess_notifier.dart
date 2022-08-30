@@ -6,7 +6,7 @@ import '../../domain/model/word_model.dart';
 import '../common/random_word_provider.dart';
 
 final reverseGuessProvider =
-    StateNotifierProvider<ReverseGuessNotifier, ReverseGuessModel?>(
+    StateNotifierProvider.autoDispose<ReverseGuessNotifier, ReverseGuessModel?>(
   (ref) => ReverseGuessNotifier(ref.read),
 );
 

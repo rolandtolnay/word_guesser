@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../domain/debouncer.dart';
 import '../../domain/model/word_model.dart';
 import '../../injectable/injectable.dart';
 import '../common/use_init_hook.dart';
@@ -26,12 +27,21 @@ class ReverseGuessPage extends HookConsumerWidget {
     final audioPlayer = useAudioPlayer();
     final textToSpeech = useState(getIt<FlutterTts>()).value;
     final ignoreTaps = useState<bool>(false);
+    final sessionWordCount = useState<int>(0);
+    final sessionCorrectCount = useState<int>(0);
+    final speechDebouncer = useState(Debouncer(Duration(seconds: 1)));
 
     final model = ref.watch(reverseGuessProvider);
-    useEffect(
-      () => _speakCorrectWord(model, textToSpeech),
-      [model?.correctWord.englishWord],
-    );
+    final isMounted = useIsMounted();
+    ref.listen<ReverseGuessModel?>(reverseGuessProvider, (previous, next) {
+      if (next == null) return;
+      final current = next.correctWord.englishWord;
+      final prev = previous?.correctWord.englishWord;
+      if (current == prev) return;
+      speechDebouncer.value.run(() {
+        if (isMounted()) textToSpeech.speak(next.correctWord.nativeWord);
+      });
+    });
 
     if (model == null) return const LoadingScaffold();
 
@@ -39,11 +49,46 @@ class ReverseGuessPage extends HookConsumerWidget {
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
+    final score = '${sessionCorrectCount.value} / ${sessionWordCount.value}';
     final menuRow = SizedBox(
       height: 64,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'SESSION SCORE:',
+                style: textTheme.caption?.copyWith(color: colorScheme.tertiary),
+              ),
+              AnimatedSwitcher(
+                switchInCurve: Curves.easeInExpo,
+                switchOutCurve: Curves.easeOutExpo,
+                duration: Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: Tween<double>(begin: 0, end: 1).animate(animation),
+                    child: child,
+                  );
+                },
+                child: SizedBox(
+                  key: ValueKey<String>(score),
+                  width: 160,
+                  child: Text(
+                    score,
+                    style: textTheme.headline6?.copyWith(
+                      color: colorScheme.tertiary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          Spacer(),
           IconButton(
             icon: Icon(
               Icons.menu,
@@ -73,11 +118,13 @@ class ReverseGuessPage extends HookConsumerWidget {
               if (isCorrect) {
                 audioPlayer.play(AssetSource('sounds/reward_sound.wav'));
                 HapticFeedback.vibrate();
+                sessionCorrectCount.value += 1;
               } else {
                 audioPlayer.play(AssetSource('sounds/incorrect_sound.wav'));
                 HapticFeedback.heavyImpact();
               }
 
+              sessionWordCount.value += 1;
               ignoreTaps.value = true;
               Future.delayed(
                 Duration(seconds: isCorrect ? 2 : 1),
@@ -101,6 +148,7 @@ class ReverseGuessPage extends HookConsumerWidget {
           child: Column(
             children: [
               menuRow,
+              const SizedBox(height: 24),
               Text(
                 model.correctWord.nativeWord.toUpperCase(),
                 style: textTheme.headline2,
@@ -117,15 +165,5 @@ class ReverseGuessPage extends HookConsumerWidget {
         ),
       ),
     );
-  }
-
-  Dispose? _speakCorrectWord(
-    ReverseGuessModel? model,
-    FlutterTts textToSpeech,
-  ) {
-    final word = model?.correctWord.nativeWord;
-    if (word == null) return null;
-    Future.delayed(const Duration(seconds: 1), () => textToSpeech.speak(word));
-    return null;
   }
 }

@@ -18,7 +18,7 @@ import 'hooks/use_char_input_controller.dart';
 import 'hooks/use_confetti_controller.dart';
 import 'notifiers/game_mode_provider.dart';
 import 'notifiers/guess_count_provider.dart';
-import 'notifiers/word_guess_notifier.dart';
+import 'notifiers/word_guess_request_notifier.dart';
 import 'notifiers/word_guess_word_notifier.dart';
 import 'widgets/char_input_widget.dart';
 
@@ -69,7 +69,7 @@ class WordGuessPage extends HookConsumerWidget {
       onPressed: () {
         isWordValid.value = controller.validateWord();
         if (isWordValid.value) {
-          ref.read(wordGuessProvider).addGuessedWord(word);
+          ref.read(wordGuessRequestProvider).addGuessedWord(word);
           audioPlayer.play(AssetSource('sounds/reward_sound.wav'));
           confettiController.play();
           HapticFeedback.vibrate();

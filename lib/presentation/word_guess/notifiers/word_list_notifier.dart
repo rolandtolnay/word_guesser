@@ -5,7 +5,7 @@ import '../../../../domain/repository/word_repository.dart';
 import '../../../../injectable/injectable.dart';
 import '../../common/request_notifier.dart';
 
-final wordListProvider = ChangeNotifierProvider(
+final wordListProvider = ChangeNotifierProvider.autoDispose(
   (ref) => WordListNotifier(getIt()),
 );
 

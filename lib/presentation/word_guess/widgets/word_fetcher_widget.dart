@@ -12,7 +12,9 @@ class WordFetcherWidget extends HookConsumerWidget {
   const WordFetcherWidget({super.key});
 
   static MaterialPageRoute<dynamic> route() {
-    return MaterialPageRoute<dynamic>(builder: (_) => const WordFetcherWidget());
+    return MaterialPageRoute<dynamic>(
+      builder: (_) => const WordFetcherWidget(),
+    );
   }
 
   @override
@@ -20,9 +22,9 @@ class WordFetcherWidget extends HookConsumerWidget {
     useInitAsync(() => ref.read(wordListProvider.notifier).fetchAllWords());
 
     final wordListNotifier = ref.watch(wordListProvider);
-    final mode = ref.watch(gameModeProvider);
     return wordListNotifier.state.maybeWhen(
       success: (_) {
+        final mode = ref.read(gameModeProvider);
         switch (mode) {
           case GameMode.discover:
           case GameMode.practice:
